@@ -68,11 +68,8 @@
 
         /* High Visibility Refined Custom Cursor (Desktop Only) */
         @media (hover: hover) and (pointer: fine) {
-            body {
-                cursor: none;
-            }
-            a, button, [role="button"], .player-card, .timeline-btn {
-                cursor: none;
+            *, *::before, *::after {
+                cursor: none !important;
             }
             #custom-cursor-dot {
                 width: 6px;
