@@ -45,6 +45,12 @@
             border-radius: 4px;
         }
 
+        /* Smooth Scroll Snap Configuration */
+        #sliderViewport {
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
         /* Glowing effects */
         .orange-glow {
             box-shadow: 0 0 20px rgba(252, 78, 0, 0.4);
@@ -80,7 +86,7 @@
                 pointer-events: none;
                 z-index: 9999;
                 transform: translate(-50%, -50%);
-                transition: width 0.1s, height 0.1s;
+                transition: width 0.1s, height 0.1s, opacity 0.2s;
             }
             #custom-cursor-ring {
                 width: 24px;
@@ -91,7 +97,7 @@
                 pointer-events: none;
                 z-index: 9998;
                 transform: translate(-50%, -50%);
-                transition: width 0.2s cubic-bezier(0.25, 1, 0.5, 1), height 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.2s;
+                transition: width 0.2s cubic-bezier(0.25, 1, 0.5, 1), height 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.2s, opacity 0.2s;
             }
             /* Hover States managed via JS classes */
             .cursor-hover #custom-cursor-ring {
@@ -103,6 +109,14 @@
             .cursor-hover #custom-cursor-dot {
                 width: 8px;
                 height: 8px;
+            }
+            /* Hide custom cursor when mouse is over scrollbars or out of window */
+            .hide-custom-cursor, .hide-custom-cursor * {
+                cursor: auto !important;
+            }
+            .hide-custom-cursor #custom-cursor-dot,
+            .hide-custom-cursor #custom-cursor-ring {
+                opacity: 0 !important;
             }
         }
     </style>
@@ -391,14 +405,19 @@
                 </div>
             </div>
 
-            <!-- Player cards horizontal container -->
-            <div id="sliderViewport" class="overflow-x-auto scroll-smooth flex gap-4 sm:gap-6 pb-6 snap-x snap-mandatory">
+            <!-- Player cards horizontal container (With drag-to-scroll support) -->
+            <div id="sliderViewport" class="overflow-x-auto scroll-smooth flex gap-4 sm:gap-6 pb-4 snap-x snap-mandatory cursor-grab active:cursor-grabbing select-none">
                 
                 <!-- Player Card Generator Container (Filled & Managed by Javascript for Translation & Scalability) -->
                 <div id="playersCardContainer" class="flex gap-4 sm:gap-6">
                     <!-- Javascript will inject 8 player cards here -->
                 </div>
 
+            </div>
+
+            <!-- Slider Dots Indicators -->
+            <div id="sliderDots" class="flex justify-center gap-2.5 mt-6">
+                <!-- Dots generated dynamically in JS -->
             </div>
         </div>
     </section>
@@ -981,7 +1000,125 @@
                     </div>
                 `;
             });
+            
+            setupSliderNavigation();
             attachCursorListeners();
+        }
+
+        /* Set up Drag-to-Scroll & Pagination Dot Navigation */
+        function setupSliderNavigation() {
+            const viewport = document.getElementById('sliderViewport');
+            const dotsContainer = document.getElementById('sliderDots');
+            const totalPlayers = Object.keys(playersData).length;
+
+            // Generate indicators
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < totalPlayers; i++) {
+                const dot = document.createElement('button');
+                dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === 0 ? 'bg-brandOrange w-6' : 'bg-white/20'}`;
+                dot.setAttribute('aria-label', `Go to player card ${i + 1}`);
+                dot.onclick = () => {
+                    const card = viewport.children[0].children[i];
+                    if (card) {
+                        viewport.scrollTo({
+                            left: card.offsetLeft - 16,
+                            behavior: 'smooth'
+                        });
+                    }
+                };
+                dotsContainer.appendChild(dot);
+            }
+
+            // Sync dots during manual/wheel/drag scroll
+            viewport.onscroll = () => {
+                const cards = viewport.children[0].children;
+                if (!cards || cards.length === 0) return;
+                
+                let activeIndex = 0;
+                let minDistance = Infinity;
+
+                for (let i = 0; i < cards.length; i++) {
+                    const rect = cards[i].getBoundingClientRect();
+                    const containerRect = viewport.getBoundingClientRect();
+                    const distance = Math.abs((rect.left + rect.width / 2) - (containerRect.left + containerRect.width / 2));
+                    
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        activeIndex = i;
+                    }
+                }
+
+                Array.from(dotsContainer.children).forEach((dot, idx) => {
+                    if (idx === activeIndex) {
+                        dot.className = 'w-2.5 h-2.5 rounded-full transition-all duration-300 bg-brandOrange w-6';
+                    } else {
+                        dot.className = 'w-2.5 h-2.5 rounded-full transition-all duration-300 bg-white/20';
+                    }
+                });
+            };
+
+            // Mouse Drag-to-Scroll Mechanism with Inertial Snapping
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            viewport.addEventListener('mousedown', (e) => {
+                isDown = true;
+                viewport.style.scrollBehavior = 'auto'; // Disable native smooth scroll during active drag for low latency tracking
+                viewport.classList.replace('cursor-grab', 'cursor-grabbing');
+                startX = e.pageX - viewport.offsetLeft;
+                scrollLeft = viewport.scrollLeft;
+            });
+
+            viewport.addEventListener('mouseleave', () => {
+                if (!isDown) return;
+                isDown = false;
+                viewport.style.scrollBehavior = 'smooth';
+                viewport.classList.replace('cursor-grabbing', 'cursor-grab');
+                snapToNearestCard();
+            });
+
+            viewport.addEventListener('mouseup', () => {
+                if (!isDown) return;
+                isDown = false;
+                viewport.style.scrollBehavior = 'smooth';
+                viewport.classList.replace('cursor-grabbing', 'cursor-grab');
+                snapToNearestCard();
+            });
+
+            viewport.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - viewport.offsetLeft;
+                const walk = (x - startX) * 1.5; // Drag sensitivity
+                viewport.scrollLeft = scrollLeft - walk;
+            });
+
+            // Smooth snap transition calculator
+            function snapToNearestCard() {
+                const cards = viewport.children[0].children;
+                if (!cards || cards.length === 0) return;
+
+                let closestCard = cards[0];
+                let minDiff = Infinity;
+                const containerLeft = viewport.getBoundingClientRect().left;
+
+                Array.from(cards).forEach((card) => {
+                    const rect = card.getBoundingClientRect();
+                    const diff = Math.abs(rect.left - containerLeft - 16); // 16px relative offset
+                    if (diff < minDiff) {
+                        minDiff = diff;
+                        closestCard = card;
+                    }
+                });
+
+                if (closestCard) {
+                    viewport.scrollTo({
+                        left: closestCard.offsetLeft - 16,
+                        behavior: 'smooth'
+                    });
+                }
+            }
         }
 
         function changeLanguage(lang) {
@@ -1143,6 +1280,25 @@
             // Instantly move the core dot
             cursorDot.style.left = `${cursorCoords.x}px`;
             cursorDot.style.top = `${cursorCoords.y}px`;
+
+            // Detect if cursor is approaching browser scrollbar zones or horizontal overflow elements
+            const scrollbarMargin = 16;
+            const isNearVerticalScrollbar = e.clientX >= window.innerWidth - scrollbarMargin;
+            const isNearHorizontalScrollbar = e.clientY >= window.innerHeight - scrollbarMargin;
+
+            if (isNearVerticalScrollbar || isNearHorizontalScrollbar) {
+                document.body.classList.add('hide-custom-cursor');
+            } else {
+                document.body.classList.remove('hide-custom-cursor');
+            }
+        });
+
+        // Hide customized cursor completely when mouse leaves browser focus
+        document.addEventListener('mouseleave', () => {
+            document.body.classList.add('hide-custom-cursor');
+        });
+        document.addEventListener('mouseenter', () => {
+            document.body.classList.remove('hide-custom-cursor');
         });
 
         // Smoothly interpolate the tracking ring
@@ -1186,10 +1342,11 @@
             document.getElementById(`content-${year}`).classList.remove('hidden');
         }
 
-        /* 4. Player Slider navigation */
+        /* 4. Player Slider navigation using Dot-Based offsets */
         function slidePlayers(direction) {
             const viewport = document.getElementById('sliderViewport');
-            const cardWidth = viewport.firstElementChild ? viewport.firstElementChild.offsetWidth + 24 : 360;
+            const cardWidth = viewport.firstElementChild?.children[0] ? viewport.firstElementChild.children[0].offsetWidth + 24 : 360;
+            
             if (direction === 'left') {
                 viewport.scrollBy({ left: -cardWidth, behavior: 'smooth' });
             } else {
