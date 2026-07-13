@@ -52,11 +52,6 @@
             text-shadow: 0 0 10px rgba(252, 78, 0, 0.6);
         }
 
-        /* Card Perspective and Flip effect */
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-        
         /* Custom slide animation for the timeline */
         @keyframes pulseGlow {
             0%, 100% { opacity: 0.3; transform: scale(1); }
@@ -103,8 +98,8 @@
                     <a href="#dashboard" class="text-white hover:text-brandOrange font-medium tracking-wide transition-colors">오늘의 독수리</a>
                 </div>
                 <div>
-                    <a href="#dashboard" class="bg-brandOrange hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 inline-block text-sm shadow-md orange-glow">
-                        티켓 예매 <i class="fa-solid fa-ticket ml-1"></i>
+                    <a href="https://www.hanwhaeagles.co.kr" target="_blank" class="bg-brandOrange hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 inline-block text-sm shadow-md orange-glow">
+                        공식 홈페이지 <i class="fa-solid fa-up-right-from-square ml-1"></i>
                     </a>
                 </div>
             </div>
@@ -171,7 +166,7 @@
                 </p>
             </div>
 
-            <!-- Interative Timeline Tabs & Display Layout -->
+            <!-- Interactive Timeline Tabs & Display Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 
                 <!-- Left: Timeline Buttons -->
@@ -294,8 +289,8 @@
                         POINT 02. <span class="text-brandOrange font-black">독수리 주역들</span>
                     </h2>
                     <p class="text-brandGray mt-4 text-base sm:text-lg max-w-2xl">
-                        팀을 지탱하는 국보급 베테랑과 마운드를 지배할 젊은 청년 독수리들. <br>
-                        한화이글스 전설을 함께 써나가는 다이내믹 라이인업 카드입니다.
+                        팀을 지탱하는 국보급 베테랑과 마운드를 지배하는 젊은 청년 독수리들. <br>
+                        한화이글스 전설을 써나가는 핵심 주역들의 디테일한 라인업을 소개합니다.
                     </p>
                 </div>
                 <!-- Navigation Arrows for Slider -->
@@ -317,7 +312,6 @@
                     <div class="absolute right-4 top-4 text-brandOrange font-headline text-5xl opacity-10 font-black select-none">99</div>
                     <div>
                         <div class="relative w-full h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-6 flex items-end justify-center">
-                            <!-- SVG Placeholder for legendary pitcher portrait -->
                             <svg class="w-40 h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
                                 <circle cx="50" cy="35" r="20" />
                                 <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
@@ -327,7 +321,7 @@
                             </div>
                         </div>
                         <h3 class="text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">류현진 <span class="text-sm font-normal text-brandGray ml-1">LHP</span></h3>
-                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"코리안 몬스터의 감격스런 대전 귀환, 마운드의 영원한 지배자"</p>
+                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"코리안 몬스터의 위대한 대전 귀환, 마운드의 영원한 지배자"</p>
                     </div>
                     <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-sm">
                         <span class="text-brandGray">통산 승수</span>
@@ -335,7 +329,29 @@
                     </div>
                 </div>
 
-                <!-- Card 2: Moon Dong-Ju -->
+                <!-- Card 2: Chae Eun-Seong -->
+                <div class="player-card min-w-[280px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('chae')">
+                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-5xl opacity-10 font-black select-none">22</div>
+                    <div>
+                        <div class="relative w-full h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-6 flex items-end justify-center">
+                            <svg class="w-40 h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
+                                <circle cx="50" cy="35" r="20" />
+                                <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
+                            </svg>
+                            <div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-md border border-white/10">
+                                <span class="text-xs font-bold text-brandOrange">INFIELDER</span>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">채은성 <span class="text-sm font-normal text-brandGray ml-1">1B</span></h3>
+                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"그라운드를 지휘하는 이글스의 캡틴, 해결사의 클래스"</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-sm">
+                        <span class="text-brandGray">포지션</span>
+                        <span class="font-bold text-white font-headline">주장 / 1루수</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Moon Dong-Ju -->
                 <div class="player-card min-w-[280px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('moon')">
                     <div class="absolute right-4 top-4 text-brandOrange font-headline text-5xl opacity-10 font-black select-none">1</div>
                     <div>
@@ -349,7 +365,7 @@
                             </div>
                         </div>
                         <h3 class="text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">문동주 <span class="text-sm font-normal text-brandGray ml-1">RHP</span></h3>
-                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"대한민국 최고 구속 160.1km를 찍은 불꽃 광속 에이스"</p>
+                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"대한민국 최고 구속 160.1km를 돌파한 독수리 광속 에이스"</p>
                     </div>
                     <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-sm">
                         <span class="text-brandGray">최고 구속</span>
@@ -357,7 +373,7 @@
                     </div>
                 </div>
 
-                <!-- Card 3: Noh Si-Hwan -->
+                <!-- Card 4: Noh Si-Hwan -->
                 <div class="player-card min-w-[280px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('noh')">
                     <div class="absolute right-4 top-4 text-brandOrange font-headline text-5xl opacity-10 font-black select-none">8</div>
                     <div>
@@ -371,7 +387,7 @@
                             </div>
                         </div>
                         <h3 class="text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">노시환 <span class="text-sm font-normal text-brandGray ml-1">3B</span></h3>
-                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"전설의 4번 타자 계보를 잇는 KBO 최고의 홈런 폭격기"</p>
+                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"KBO 대표 홈런왕이자 국가대표 해결사 타선을 지휘하는 슬러거"</p>
                     </div>
                     <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-sm">
                         <span class="text-brandGray">대표 타이틀</span>
@@ -379,9 +395,53 @@
                     </div>
                 </div>
 
-                <!-- Card 4: Hwang Jun-Seo -->
+                <!-- Card 5: Kim Seo-Hyeon -->
+                <div class="player-card min-w-[280px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('kim')">
+                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-5xl opacity-10 font-black select-none">44</div>
+                    <div>
+                        <div class="relative w-full h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-6 flex items-end justify-center">
+                            <svg class="w-40 h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
+                                <circle cx="50" cy="35" r="20" />
+                                <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
+                            </svg>
+                            <div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-md border border-white/10">
+                                <span class="text-xs font-bold text-brandOrange">PITCHER</span>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">김서현 <span class="text-sm font-normal text-brandGray ml-1">RHP</span></h3>
+                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"프리미어 12를 지배한 불꽃 파워피처, 최고의 차세대 마무리"</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-sm">
+                        <span class="text-brandGray">지명 순위</span>
+                        <span class="font-bold text-white font-headline">전체 1순위 (2023)</span>
+                    </div>
+                </div>
+
+                <!-- Card 6: Joo Hyun-Sang -->
+                <div class="player-card min-w-[280px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('joo')">
+                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-5xl opacity-10 font-black select-none">66</div>
+                    <div>
+                        <div class="relative w-full h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-6 flex items-end justify-center">
+                            <svg class="w-40 h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
+                                <circle cx="50" cy="35" r="20" />
+                                <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
+                            </svg>
+                            <div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-md border border-white/10">
+                                <span class="text-xs font-bold text-brandOrange">PITCHER</span>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">주현상 <span class="text-sm font-normal text-brandGray ml-1">RHP</span></h3>
+                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"한화의 뒷문을 책임지는 최고의 철벽 마무리 수호신"</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-sm">
+                        <span class="text-brandGray">핵심 임무</span>
+                        <span class="font-bold text-white font-headline">클로저 (Closer)</span>
+                    </div>
+                </div>
+
+                <!-- Card 7: Hwang Jun-Seo -->
                 <div class="player-card min-w-[280px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('hwang')">
-                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-5xl opacity-10 font-black select-none">15</div>
+                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-5xl opacity-10 font-black select-none">29</div>
                     <div>
                         <div class="relative w-full h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-6 flex items-end justify-center">
                             <svg class="w-40 h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
@@ -393,11 +453,33 @@
                             </div>
                         </div>
                         <h3 class="text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">황준서 <span class="text-sm font-normal text-brandGray ml-1">LHP</span></h3>
-                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"1순위 지명의 품격, 전장을 정복할 영리한 차세대 에이스"</p>
+                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"1순위 지명의 위엄, 날카로운 스플리터의 차세대 좌완 에이스"</p>
                     </div>
                     <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-sm">
                         <span class="text-brandGray">지명 순위</span>
-                        <span class="font-bold text-white font-headline">전체 1순위</span>
+                        <span class="font-bold text-white font-headline">전체 1순위 (2024)</span>
+                    </div>
+                </div>
+
+                <!-- Card 8: Hwang Young-Muk -->
+                <div class="player-card min-w-[280px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('muk')">
+                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-5xl opacity-10 font-black select-none">95</div>
+                    <div>
+                        <div class="relative w-full h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-6 flex items-end justify-center">
+                            <svg class="w-40 h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
+                                <circle cx="50" cy="35" r="20" />
+                                <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
+                            </svg>
+                            <div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-md border border-white/10">
+                                <span class="text-xs font-bold text-brandOrange">INFIELDER</span>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">황영묵 <span class="text-sm font-normal text-brandGray ml-1">IF</span></h3>
+                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"허슬 플레이의 대명사, 그라운드의 묵토비이자 만능 수비 열정맨"</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-sm">
+                        <span class="text-brandGray">팬덤 별명</span>
+                        <span class="font-bold text-white font-headline">묵토비 (Hustle)</span>
                     </div>
                 </div>
 
@@ -548,7 +630,7 @@
                             <!-- Team B: KIA -->
                             <div class="flex flex-col items-center">
                                 <div class="w-16 h-16 rounded-full bg-red-700 flex items-center justify-center text-white text-3xl font-headline font-black shadow-lg">
-                                    KT
+                                    KIA
                                 </div>
                                 <span class="font-bold text-lg text-white mt-3">KIA 타이거즈</span>
                                 <span class="text-xs text-brandGray mt-1">선발: 양현종</span>
@@ -561,9 +643,9 @@
                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                             <p class="text-sm text-brandGray">현재 대전 기온: <span class="text-white font-semibold">22.5°C (경기 진행 쾌적)</span></p>
                         </div>
-                        <button onclick="showTicketingDemo()" class="bg-brandOrange hover:bg-orange-600 text-white font-extrabold px-6 py-3 rounded-xl transition-all shadow-md flex items-center gap-2 text-sm w-full sm:w-auto justify-center">
-                            한화 구장 실시간 예매 <i class="fa-solid fa-arrow-right-long"></i>
-                        </button>
+                        <a href="https://www.hanwhaeagles.co.kr/GR/PC/GRPC01.do" target="_blank" class="bg-brandOrange hover:bg-orange-600 text-white font-extrabold px-6 py-3 rounded-xl transition-all shadow-md flex items-center gap-2 text-sm w-full sm:w-auto justify-center">
+                            공식 경기 일정 확인 <i class="fa-solid fa-arrow-right-long"></i>
+                        </a>
                     </div>
                 </div>
 
@@ -603,53 +685,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Booking Demo Interactive Box Modal -->
-    <div id="bookingModal" class="fixed inset-0 z-50 bg-brandNavy/95 backdrop-blur-md flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-white/20 rounded-3xl max-w-lg w-full overflow-hidden relative shadow-2xl">
-            <button onclick="closeBookingModal()" class="absolute right-6 top-6 text-white hover:text-brandOrange transition-all text-2xl z-10">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div class="p-8">
-                <span class="text-brandOrange text-xs font-bold uppercase tracking-widest">Eagles Park Ticketing</span>
-                <h3 class="text-2xl font-bold text-white mt-1 mb-6">구장 예매 도우미</h3>
-                
-                <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-brandGray uppercase mb-2">예매 희망 구역</label>
-                        <select class="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brandOrange text-sm">
-                            <option value="orange" class="bg-slate-900">1루 오렌지석 (응원 지정석)</option>
-                            <option value="outfielder" class="bg-slate-900">외야 잔디석 (가족/캠핑 추천)</option>
-                            <option value="table" class="bg-slate-900">중앙 탁자석 (최고의 시야)</option>
-                            <option value="sky" class="bg-slate-900">스카이박스 (프리미엄 관람)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-brandGray uppercase mb-2">관람 티켓 매수</label>
-                        <select class="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brandOrange text-sm">
-                            <option value="1" class="bg-slate-900">1매</option>
-                            <option value="2" class="bg-slate-900" selected>2매 (추천)</option>
-                            <option value="3" class="bg-slate-900">3매</option>
-                            <option value="4" class="bg-slate-900">4매</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-brandGray uppercase mb-2">예매자 성명</label>
-                        <input type="text" placeholder="예매자 이름을 입력해주세요" required class="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brandOrange text-sm">
-                    </div>
-
-                    <button type="submit" class="w-full bg-brandOrange hover:bg-orange-600 text-white font-extrabold py-4 rounded-xl transition-all shadow-md text-sm mt-4">
-                        예매 신청서 생성 <i class="fa-solid fa-arrow-right ml-1"></i>
-                    </button>
-                </form>
-
-                <div id="bookingResult" class="mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm hidden">
-                    <p class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> 성공적으로 요청되었습니다!</p>
-                    <p class="text-xs text-brandGray mt-1 leading-relaxed">입력하신 예매 정보가 기획 상 확인되었습니다. (이 동작은 데모용 시뮬레이션입니다.)</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Shop Demo Alert Modals representation -->
     <div id="shopAlert" class="fixed bottom-6 right-6 z-50 bg-slate-900 border border-brandOrange rounded-2xl p-6 shadow-2xl max-w-xs w-full transition-all transform translate-y-20 opacity-0 hidden">
@@ -699,7 +734,7 @@
                     <ul class="space-y-2 text-xs">
                         <li><a href="#hero" class="hover:text-brandOrange transition-colors">불꽃 캔버스 인터랙션</a></li>
                         <li><a href="#passion" class="hover:text-brandOrange transition-colors">오디오 응원비트 연주</a></li>
-                        <li><a href="#dashboard" class="hover:text-brandOrange transition-colors">스마트 직관 좌석맵</a></li>
+                        <li><a href="#dashboard" class="hover:text-brandOrange transition-colors">실시간 대시보드</a></li>
                     </ul>
                 </div>
             </div>
@@ -775,7 +810,6 @@
         }
 
         function handleParticles() {
-            // Spawn rate controlled
             if (particlesArray.length < 120) {
                 particlesArray.push(new Particle());
             }
@@ -800,13 +834,11 @@
 
         /* 2. Timeline Interaction */
         function switchTimeline(year) {
-            // Button classes update
             document.querySelectorAll('.timeline-btn').forEach(btn => {
                 btn.classList.remove('active-timeline', 'border-brandOrange');
             });
             document.getElementById(`btn-${year}`).classList.add('active-timeline', 'border-brandOrange');
 
-            // Content update
             document.querySelectorAll('.timeline-content').forEach(content => {
                 content.classList.add('hidden');
             });
@@ -830,48 +862,96 @@
                 name: "류현진",
                 num: "99",
                 pos: "LHP (선발투수)",
-                bio: "메이저리그를 누비며 전 세계 야구팬들을 뜨겁게 했던 '코리안 몬스터'가 마침내 고향 구단 대전으로 돌아왔습니다. 압도적인 칼날 제구력과 묵직한 이닝이터로서의 무게감으로 한화의 가을 비행을 지켜냅니다.",
+                bio: "메이저리그를 누비며 전 세계 야구팬들을 뜨겁게 했던 '코리안 몬스터'가 마침내 고향 구단 대전으로 돌아왔습니다. 압도적인 제구력과 묵직한 이닝이터로서의 무게감으로 한화의 마운드를 지탱합니다.",
                 stats: {
-                    "2026 예상 승수": "13승 4패",
-                    "예상 방어율 (ERA)": "2.85",
+                    "2026 예상 승수": "13승 5패",
+                    "예상 방어율 (ERA)": "2.95",
                     "예상 탈삼진 (SO)": "145개",
                     "퀄리티 스타트 비율": "75%"
+                }
+            },
+            chae: {
+                name: "채은성",
+                num: "22",
+                pos: "1B / DH (내야수)",
+                bio: "한화 이글스의 든든한 주장이자 중심 타선의 핵심 해결사. 강력한 클러치 능력과 탄탄한 리더십으로 젊은 선수들을 하나로 묶고 승리로 이끕니다.",
+                stats: {
+                    "2026 예상 홈런수": "25 홈런",
+                    "2026 예상 타점": "90 타점",
+                    "득점권 타율": "0.312",
+                    "리더십 레이팅": "S Grade"
                 }
             },
             moon: {
                 name: "문동주",
                 num: "1",
                 pos: "RHP (선발투수)",
-                bio: "대한민국 야구 역사상 가장 빠른 구속인 공식 160.1km/h를 기록한 한화이글스의 젊은 불꽃광속 에이스. 한화의 굳건한 마운드를 지키는 차세대 심장입니다.",
+                bio: "대한민국 야구 역사상 가장 빠른 구속인 공식 160.1km/h를 기록한 한화이글스의 젊은 불꽃광속 에이스. 국가대표 마운드를 지키는 구단의 미래이자 심장입니다.",
                 stats: {
                     "최고 구속": "161.2 km/h",
                     "2026 예상 탈삼진": "160개",
-                    "평균 획득 자책점": "3.10",
+                    "평균 자책점 (ERA)": "3.15",
                     "이닝당 출루허용률": "1.12"
                 }
             },
             noh: {
                 name: "노시환",
                 num: "8",
-                pos: "3B (내야수/3루수)",
-                bio: "국가대표 4번 타자이자 KBO 홈런왕 타이틀을 거머쥐며 최고의 거포로 올라선 명실상부한 한화의 해결사. 한화의 주황 물결을 깨울 화끈한 슬러거 파워를 선사합니다.",
+                pos: "3B (내야수)",
+                bio: "KBO 홈런왕 타이틀을 거머쥐며 리그 최고의 3루수 거포로 우뚝 선 명실상부한 한화의 거포 해결사. 주황빛 대전을 가르는 시원한 홈런 폭격을 선사합니다.",
                 stats: {
                     "2026 예상 홈런수": "38 홈런",
                     "2026 예상 타점": "115 타점",
-                    "예상 장타율 (SLG)": "0.580",
+                    "예상 장타율 (SLG)": "0.585",
                     "득점권 타율": "0.345"
+                }
+            },
+            kim: {
+                name: "김서현",
+                num: "44",
+                pos: "RHP (투수)",
+                bio: "2023 드래프트 전체 1순위에 빛나는 초광속 투수. 독보적인 패스트볼 무브먼트와 압도적인 삼진 구사 능력으로 리그를 대표하는 불펜 수호신으로 거듭나고 있습니다.",
+                stats: {
+                    "직구 평균구속": "154.5 km/h",
+                    "2026 예상 홀드/세이브": "25 H/S",
+                    "삼진율 (K/9)": "10.45",
+                    "피안타율": "0.205"
+                }
+            },
+            joo: {
+                name: "주현상",
+                num: "66",
+                pos: "RHP (마무리투수)",
+                bio: "철벽 수비력과 탁월한 위기관리 능력을 자랑하는 한화이글스의 완벽한 수호신. 9회 말 승리를 확정 짓는 날카로운 제구력으로 팬들에게 심리적 안정감을 제공합니다.",
+                stats: {
+                    "2026 예상 세이브": "32 세이브",
+                    "예상 방어율 (ERA)": "1.85",
+                    "이닝당 출루허용률": "0.98",
+                    "세이브 성공률": "94.5%"
                 }
             },
             hwang: {
                 name: "황준서",
-                num: "15",
+                num: "29",
                 pos: "LHP (투수)",
-                bio: "KBO 드래프트 전체 1순위에 빛나는 완성형 좌완 영건 에이스. 자로 잰 듯한 정교한 승부 능력을 바탕으로 상대 타선을 흔드는 구단의 든든한 날개입니다.",
+                bio: "2024년 전체 1순위에 빛나는 특급 좌완 테크니션. 신인답지 않은 대담한 마운드 운영과 낙차 큰 결정구로 타선의 타이밍을 무너뜨리는 영리한 에이스입니다.",
                 stats: {
-                    "2026 예상 보직": "선발 로테이션",
-                    "주무기": "포크볼 / 슬라이더",
-                    "예상 탈삼진 비중": "8.5 (9이닝당)",
-                    "시즌 피안타율": "0.225"
+                    "2026 예상 승수": "8승 6패",
+                    "주무기": "스플리터 / 슬라이더",
+                    "예상 방어율 (ERA)": "3.65",
+                    "9이닝당 탈삼진": "8.8개"
+                }
+            },
+            muk: {
+                name: "황영묵",
+                num: "95",
+                pos: "IF (내야 유틸리티)",
+                bio: "독립리그에서 한화 이글스까지 올라온 인간 승리의 아이콘이자 허슬 플레이의 상징. 매 순간 온 몸을 던지는 완벽한 슬라이딩과 수비 집중력으로 경기장의 분위기를 바꿉니다.",
+                stats: {
+                    "2026 예상 타율": "0.295",
+                    "예상 안타수": "110 안타",
+                    "출루율": "0.345",
+                    "허슬 팩터": "최상 (SSS)"
                 }
             }
         };
@@ -1024,7 +1104,6 @@
                 // Start sequence (120 BPM: 500ms intervals)
                 rhythmTimer = setInterval(() => {
                     const now = audioCtx.currentTime;
-                    // Standard KBO Cheering Pattern (Base, clap, clap, base, clap)
                     if (currentStep % 4 === 0) {
                         playSynthSound('drum');
                     } else {
@@ -1035,23 +1114,7 @@
             }
         }
 
-        /* 6. Utility Booking Modal Demo */
-        function showTicketingDemo() {
-            document.getElementById('bookingModal').classList.remove('hidden');
-        }
-
-        function closeBookingModal() {
-            document.getElementById('bookingModal').classList.add('hidden');
-            document.getElementById('bookingResult').classList.add('hidden');
-            document.getElementById('bookingForm').reset();
-        }
-
-        function handleBookingSubmit(event) {
-            event.preventDefault();
-            document.getElementById('bookingResult').classList.remove('hidden');
-        }
-
-        /* 7. Shop Demo simulation */
+        /* 6. Shop Demo simulation */
         function openShopDemo(item) {
             const alertBox = document.getElementById('shopAlert');
             const title = document.getElementById('shopAlertTitle');
