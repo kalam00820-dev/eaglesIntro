@@ -45,7 +45,7 @@
             border-radius: 4px;
         }
 
-        /* Glowing effect */
+        /* Glowing effects */
         .orange-glow {
             box-shadow: 0 0 20px rgba(252, 78, 0, 0.4);
         }
@@ -53,7 +53,6 @@
             text-shadow: 0 0 10px rgba(252, 78, 0, 0.6);
         }
 
-        /* Custom slide animation for the timeline */
         @keyframes pulseGlow {
             0%, 100% { opacity: 0.3; transform: scale(1); }
             50% { opacity: 0.6; transform: scale(1.05); }
@@ -66,9 +65,51 @@
         .no-scroll {
             overflow: hidden;
         }
+
+        /* High Visibility Refined Custom Cursor (Desktop Only) */
+        @media (hover: hover) and (pointer: fine) {
+            body {
+                cursor: none;
+            }
+            a, button, [role="button"], .player-card, .timeline-btn {
+                cursor: none;
+            }
+            #custom-cursor-dot {
+                width: 6px;
+                height: 6px;
+                background-color: #FC4E00;
+                position: fixed;
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9999;
+                transform: translate(-50%, -50%);
+                transition: width 0.1s, height 0.1s;
+            }
+            #custom-cursor-ring {
+                width: 24px;
+                height: 24px;
+                border: 2px solid rgba(252, 78, 0, 0.6);
+                position: fixed;
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9998;
+                transform: translate(-50%, -50%);
+                transition: width 0.2s cubic-bezier(0.25, 1, 0.5, 1), height 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.2s;
+            }
+            /* Hover States managed via JS classes */
+            .cursor-hover #custom-cursor-ring {
+                width: 44px;
+                height: 44px;
+                background-color: rgba(252, 78, 0, 0.1);
+                border-color: rgba(252, 78, 0, 1);
+            }
+            .cursor-hover #custom-cursor-dot {
+                width: 8px;
+                height: 8px;
+            }
+        }
     </style>
     <script>
-        // Tailwind Custom Configurations
         tailwind.config = {
             theme: {
                 extend: {
@@ -83,6 +124,10 @@
     </script>
 </head>
 <body class="selection:bg-brandOrange selection:text-white">
+
+    <!-- High Visibility Custom Cursor Elements -->
+    <div id="custom-cursor-dot" class="hidden md:block"></div>
+    <div id="custom-cursor-ring" class="hidden md:block"></div>
 
     <!-- Navigation Bar -->
     <nav id="navbar" class="fixed top-0 left-0 w-full z-50 bg-brandNavy/80 backdrop-blur-md border-b border-white/10 transition-all duration-300">
@@ -99,16 +144,22 @@
                 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#hero" class="text-white hover:text-brandOrange font-medium tracking-wide transition-colors text-sm">HOME</a>
-                    <a href="#narrative" class="text-white hover:text-brandOrange font-medium tracking-wide transition-colors text-sm">불꽃 서사</a>
-                    <a href="#heroes" class="text-white hover:text-brandOrange font-medium tracking-wide transition-colors text-sm">선수 라인업</a>
-                    <a href="#passion" class="text-white hover:text-brandOrange font-medium tracking-wide transition-colors text-sm">응원 광장</a>
-                    <a href="#dashboard" class="text-white hover:text-brandOrange font-medium tracking-wide transition-colors text-sm">오늘의 독수리</a>
+                    <a href="#hero" data-i18n="nav_home" class="text-white hover:text-brandOrange font-medium tracking-wide transition-colors text-sm">HOME</a>
+                    <a href="#narrative" data-i18n="nav_narrative" class="text-white hover:text-brandOrange font-medium tracking-wide transition-colors text-sm">불꽃 서사</a>
+                    <a href="#heroes" data-i18n="nav_heroes" class="text-white hover:text-brandOrange font-medium tracking-wide transition-colors text-sm">선수 라인업</a>
+                    <a href="#passion" class="text-i18n nav_passion text-white hover:text-brandOrange font-medium tracking-wide transition-colors text-sm" data-i18n="nav_passion">응원 광장</a>
+                    <a href="#dashboard" data-i18n="nav_dashboard" class="text-white hover:text-brandOrange font-medium tracking-wide transition-colors text-sm">오늘의 독수리</a>
                 </div>
                 
-                <!-- Right Side Actions & Mobile Hamburger button -->
+                <!-- Right Side Actions: Language Toggle & Official Site link -->
                 <div class="flex items-center gap-3">
-                    <a href="https://www.hanwhaeagles.co.kr" target="_blank" class="hidden sm:inline-block bg-brandOrange hover:bg-orange-700 text-white font-bold py-2 px-5 rounded-full transition-all duration-300 transform hover:scale-105 text-xs sm:text-sm shadow-md orange-glow">
+                    <!-- Language Switcher Buttons -->
+                    <div class="flex items-center bg-white/5 border border-white/10 rounded-full p-1 text-xs">
+                        <button onclick="changeLanguage('ko')" id="lang-ko-btn" class="px-2.5 py-1 rounded-full font-bold transition-all bg-brandOrange text-white">KR</button>
+                        <button onclick="changeLanguage('en')" id="lang-en-btn" class="px-2.5 py-1 rounded-full font-bold transition-all text-brandGray hover:text-white">EN</button>
+                    </div>
+
+                    <a href="https://www.hanwhaeagles.co.kr" target="_blank" data-i18n="btn_official" class="hidden sm:inline-block bg-brandOrange hover:bg-orange-700 text-white font-bold py-2 px-5 rounded-full transition-all duration-300 transform hover:scale-105 text-xs sm:text-sm shadow-md orange-glow">
                         공식 홈페이지 <i class="fa-solid fa-up-right-from-square ml-1"></i>
                     </a>
                     
@@ -124,25 +175,25 @@
     <!-- Mobile Menu Drawer Overlay -->
     <div id="mobileDrawer" class="fixed inset-0 z-40 bg-brandNavy/95 backdrop-blur-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col justify-between pt-24 pb-8 px-6">
         <div class="flex flex-col space-y-6">
-            <a href="#hero" onclick="toggleMobileMenu()" class="text-2xl font-headline text-white hover:text-brandOrange transition-colors py-2 border-b border-white/5 flex items-center justify-between">
+            <a href="#hero" onclick="toggleMobileMenu()" data-i18n="nav_home" class="text-2xl font-headline text-white hover:text-brandOrange transition-colors py-2 border-b border-white/5 flex items-center justify-between">
                 <span>HOME</span> <i class="fa-solid fa-chevron-right text-sm text-brandOrange"></i>
             </a>
-            <a href="#narrative" onclick="toggleMobileMenu()" class="text-2xl font-headline text-white hover:text-brandOrange transition-colors py-2 border-b border-white/5 flex items-center justify-between">
+            <a href="#narrative" onclick="toggleMobileMenu()" data-i18n="nav_narrative" class="text-2xl font-headline text-white hover:text-brandOrange transition-colors py-2 border-b border-white/5 flex items-center justify-between">
                 <span>불꽃 서사</span> <i class="fa-solid fa-chevron-right text-sm text-brandOrange"></i>
             </a>
-            <a href="#heroes" onclick="toggleMobileMenu()" class="text-2xl font-headline text-white hover:text-brandOrange transition-colors py-2 border-b border-white/5 flex items-center justify-between">
+            <a href="#heroes" onclick="toggleMobileMenu()" data-i18n="nav_heroes" class="text-2xl font-headline text-white hover:text-brandOrange transition-colors py-2 border-b border-white/5 flex items-center justify-between">
                 <span>선수 라인업</span> <i class="fa-solid fa-chevron-right text-sm text-brandOrange"></i>
             </a>
-            <a href="#passion" onclick="toggleMobileMenu()" class="text-2xl font-headline text-white hover:text-brandOrange transition-colors py-2 border-b border-white/5 flex items-center justify-between">
+            <a href="#passion" onclick="toggleMobileMenu()" data-i18n="nav_passion" class="text-2xl font-headline text-white hover:text-brandOrange transition-colors py-2 border-b border-white/5 flex items-center justify-between">
                 <span>응원 광장</span> <i class="fa-solid fa-chevron-right text-sm text-brandOrange"></i>
             </a>
-            <a href="#dashboard" onclick="toggleMobileMenu()" class="text-2xl font-headline text-white hover:text-brandOrange transition-colors py-2 border-b border-white/5 flex items-center justify-between">
+            <a href="#dashboard" onclick="toggleMobileMenu()" data-i18n="nav_dashboard" class="text-2xl font-headline text-white hover:text-brandOrange transition-colors py-2 border-b border-white/5 flex items-center justify-between">
                 <span>오늘의 독수리</span> <i class="fa-solid fa-chevron-right text-sm text-brandOrange"></i>
             </a>
         </div>
         
         <div class="space-y-4">
-            <a href="https://www.hanwhaeagles.co.kr" target="_blank" class="w-full text-center bg-brandOrange hover:bg-orange-700 text-white font-bold py-3.5 rounded-xl transition-all block text-base shadow-lg orange-glow">
+            <a href="https://www.hanwhaeagles.co.kr" target="_blank" data-i18n="btn_official" class="w-full text-center bg-brandOrange hover:bg-orange-700 text-white font-bold py-3.5 rounded-xl transition-all block text-base shadow-lg orange-glow">
                 공식 홈페이지 바로가기 <i class="fa-solid fa-up-right-from-square ml-1"></i>
             </a>
             <p class="text-center text-xs text-brandGray">끝까지 타오르는 오렌지빛 함성 • 한화 이글스</p>
@@ -151,7 +202,7 @@
 
     <!-- SECTION 1: Hero Area with interactive spark system -->
     <section id="hero" class="relative w-full min-h-screen flex items-center justify-center bg-brandNavy overflow-hidden pt-16">
-        <!-- Interactive WebGL-like Canvas Background for rising sparks -->
+        <!-- Interactive Sparks Canvas Background -->
         <canvas id="sparksCanvas" class="absolute inset-0 pointer-events-none z-10"></canvas>
         
         <!-- Gradient radial overlay for dramatic light -->
@@ -159,25 +210,25 @@
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(252,78,0,0.12)_0%,transparent_70%)] z-0"></div>
 
         <div class="relative z-20 text-center px-4 max-w-5xl mx-auto py-12">
-            <span class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-brandOrange/10 border border-brandOrange/30 text-brandOrange text-xs sm:text-sm font-bold uppercase tracking-widest mb-6 animate-bounce">
+            <span data-i18n="hero_tag" class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-brandOrange/10 border border-brandOrange/30 text-brandOrange text-xs sm:text-sm font-bold uppercase tracking-widest mb-6 animate-bounce">
                 <i class="fa-solid fa-fire"></i> 2026 Season: Rebirth of Eagles
             </span>
             
-            <h1 class="font-headline text-3xl sm:text-5xl md:text-7xl lg:text-8xl tracking-tighter text-white uppercase leading-tight select-none mb-4">
+            <h1 data-i18n="hero_title" class="font-headline text-3xl sm:text-5xl md:text-7xl lg:text-8xl tracking-tighter text-white uppercase leading-tight select-none mb-4">
                 끝까지 타오르는 <br class="sm:hidden">
                 <span class="text-brandOrange orange-glow-text">오렌지빛 함성</span>
             </h1>
             
-            <p class="text-brandGray text-sm sm:text-lg md:text-2xl font-light tracking-wide max-w-3xl mx-auto mt-4 sm:mt-6 mb-8 sm:mb-12 leading-relaxed px-2">
+            <p data-i18n="hero_desc" class="text-brandGray text-sm sm:text-lg md:text-2xl font-light tracking-wide max-w-3xl mx-auto mt-4 sm:mt-6 mb-8 sm:mb-12 leading-relaxed px-2">
                 세상에서 가장 단단한 불꽃들이 모여 대전을 오렌지빛으로 채운다.<br class="hidden sm:inline">
                 우리는 이기고 질 때를 가리지 않고 끝까지 응원하는 <span class="text-white font-semibold underline decoration-brandOrange decoration-2">한화 이글스</span>입니다.
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 px-4 sm:px-0">
-                <a href="#narrative" class="w-full sm:w-auto bg-brandOrange hover:bg-orange-700 text-white font-extrabold text-base sm:text-lg px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 shadow-lg orange-glow flex items-center justify-center gap-2">
+                <a href="#narrative" data-i18n="hero_cta_1" class="w-full sm:w-auto bg-brandOrange hover:bg-orange-700 text-white font-extrabold text-base sm:text-lg px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 shadow-lg orange-glow flex items-center justify-center gap-2">
                     독수리의 비상 서사 보기 <i class="fa-solid fa-chevron-down"></i>
                 </a>
-                <a href="#passion" class="w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white font-bold text-base sm:text-lg px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl border border-white/20 transition-all duration-300 hover:border-brandOrange flex items-center justify-center gap-2">
+                <a href="#passion" data-i18n="hero_cta_2" class="w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white font-bold text-base sm:text-lg px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl border border-white/20 transition-all duration-300 hover:border-brandOrange flex items-center justify-center gap-2">
                     육성응원 비트 듣기 <i class="fa-solid fa-volume-high text-brandOrange"></i>
                 </a>
             </div>
@@ -199,27 +250,27 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-20">
-                <h2 class="font-headline text-2xl sm:text-4xl md:text-5xl text-white uppercase tracking-tight">
+                <h2 data-i18n="point_1_title" class="font-headline text-2xl sm:text-4xl md:text-5xl text-white uppercase tracking-tight">
                     POINT 01. <span class="text-brandOrange font-black">불꽃의 반격</span>
                 </h2>
                 <div class="w-16 sm:w-20 h-1 bg-brandOrange mx-auto my-4 sm:my-6"></div>
-                <p class="text-brandGray text-sm sm:text-lg leading-relaxed px-2">
+                <p data-i18n="point_1_desc" class="text-brandGray text-sm sm:text-lg leading-relaxed px-2">
                     길고 어두웠던 터널과 깊은 암흑기 속에서도 우리는 멈추지 않았습니다.<br>
                     패배를 두려워하지 않고 끝까지 응원해 준 영혼들의 힘으로, 마침내 도약을 이뤄낸 독수리들의 위대한 기적을 돌아봅니다.
                 </p>
             </div>
 
-            <!-- Interactive Timeline Tabs & Display Layout -->
+            <!-- Interactive Timeline Tabs -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
                 
-                <!-- Left: Timeline Buttons (Supports touch slider layout on mobile) -->
+                <!-- Left Tabs -->
                 <div class="lg:col-span-5 flex flex-row lg:flex-col gap-3 overflow-x-auto lg:overflow-x-visible pb-4 lg:pb-0 scroll-smooth -mx-4 px-4 lg:mx-0 lg:px-0 snap-x">
-                    <button onclick="switchTimeline(2020)" id="btn-2020" class="timeline-btn flex-shrink-0 min-w-[260px] lg:min-w-0 text-left p-4 sm:p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-brandOrange/50 transition-all duration-300 flex gap-4 items-center group active-timeline snap-start">
+                    <button onclick="switchTimeline(2020)" id="btn-2020" class="timeline-btn flex-shrink-0 min-w-[260px] lg:min-w-0 text-left p-4 sm:p-6 rounded-2xl bg-white/5 border border-brandOrange transition-all duration-300 flex gap-4 items-center group active-timeline snap-start">
                         <div class="text-2xl sm:text-3xl font-headline font-black text-brandOrange timeline-year">2020-22</div>
                         <div class="h-8 w-px bg-white/20"></div>
                         <div>
-                            <h4 class="font-bold text-white text-sm sm:text-base">인고와 씨앗의 시기</h4>
-                            <p class="text-[10px] sm:text-xs text-brandGray mt-1">긴 암흑기 속 유망주 수집</p>
+                            <h4 data-i18n="tab_2020_title" class="font-bold text-white text-sm sm:text-base">인고와 씨앗의 시기</h4>
+                            <p data-i18n="tab_2020_desc" class="text-[10px] sm:text-xs text-brandGray mt-1">긴 암흑기 속 유망주 수집</p>
                         </div>
                     </button>
                     
@@ -227,8 +278,8 @@
                         <div class="text-2xl sm:text-3xl font-headline font-black text-brandGray group-hover:text-brandOrange transition-colors timeline-year">2023-24</div>
                         <div class="h-8 w-px bg-white/20"></div>
                         <div>
-                            <h4 class="font-bold text-white text-sm sm:text-base">영웅들의 귀환과 성장</h4>
-                            <p class="text-[10px] sm:text-xs text-brandGray mt-1">괴물 복귀와 젊은 타자 진화</p>
+                            <h4 data-i18n="tab_2023_title" class="font-bold text-white text-sm sm:text-base">영웅들의 귀환과 성장</h4>
+                            <p data-i18n="tab_2023_desc" class="text-[10px] sm:text-xs text-brandGray mt-1">괴물 복귀와 젊은 타자 진화</p>
                         </div>
                     </button>
                     
@@ -236,83 +287,79 @@
                         <div class="text-2xl sm:text-3xl font-headline font-black text-brandGray group-hover:text-brandOrange transition-colors timeline-year">2025-26</div>
                         <div class="h-8 w-px bg-white/20"></div>
                         <div>
-                            <h4 class="font-bold text-white text-sm sm:text-base">마침내 찬란한 비상</h4>
-                            <p class="text-[10px] sm:text-xs text-brandGray mt-1">강력한 시너지로 상위권 도약</p>
+                            <h4 data-i18n="tab_2025_title" class="font-bold text-white text-sm sm:text-base">마침내 찬란한 비상</h4>
+                            <p data-i18n="tab_2025_desc" class="text-[10px] sm:text-xs text-brandGray mt-1">강력한 시너지로 상위권 도약</p>
                         </div>
                     </button>
                 </div>
 
-                <!-- Right: Visual Display Card of Active Year -->
+                <!-- Right Display Card -->
                 <div class="lg:col-span-7 bg-white/5 border border-white/10 p-6 sm:p-10 rounded-3xl relative overflow-hidden min-h-[360px] lg:h-[420px] flex flex-col justify-between">
-                    
-                    <!-- Decorative subtle orange background aura -->
                     <div class="absolute -right-20 -top-20 w-60 sm:w-80 h-60 sm:h-80 bg-brandOrange/20 rounded-full blur-3xl"></div>
                     
-                    <!-- Timeline Content 1 (2020-2022) -->
+                    <!-- Content block (updated dynamically via translation config or JS lang changer) -->
                     <div id="content-2020" class="timeline-content space-y-4 sm:space-y-6">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-brandOrange bg-brandOrange/10 px-2.5 py-1 rounded">Darkness to Dawn</span>
-                        <h3 class="text-xl sm:text-3xl font-bold text-white leading-snug">가장 어두울 때 새로운 독수리가 잉태되다</h3>
-                        <p class="text-brandGray text-xs sm:text-base leading-relaxed">
+                        <span data-i18n="badge_2020" class="text-[10px] font-bold uppercase tracking-wider text-brandOrange bg-brandOrange/10 px-2.5 py-1 rounded">Darkness to Dawn</span>
+                        <h3 data-i18n="content_2020_h" class="text-xl sm:text-3xl font-bold text-white leading-snug">가장 어두울 때 새로운 독수리가 잉태되다</h3>
+                        <p data-i18n="content_2020_p" class="text-brandGray text-xs sm:text-base leading-relaxed">
                             매서운 추위 속에서도 봄날의 싹을 틔우듯, 한화 이글스는 성장을 거듭했습니다. 긴 암흑기는 단순한 패배가 아니라, 유망주 투수 황준서, 문동주, 노시환의 대폭발을 가져오기 위한 혹독한 겨울잠이었습니다. 우리는 언제나 믿고 기다렸습니다.
                         </p>
                         <div class="grid grid-cols-3 gap-3 pt-4 border-t border-white/10">
                             <div>
-                                <div class="text-[10px] sm:text-xs text-brandGray">최대 관중 점유</div>
+                                <div data-i18n="stat_lbl_1" class="text-[10px] sm:text-xs text-brandGray">최대 관중 점유</div>
                                 <div class="text-sm sm:text-xl font-bold text-white">90% +</div>
                             </div>
                             <div>
-                                <div class="text-[10px] sm:text-xs text-brandGray">청년 지표 성장</div>
-                                <div class="text-sm sm:text-xl font-bold text-white">Top Tier</div>
+                                <div data-i18n="stat_lbl_2" class="text-[10px] sm:text-xs text-brandGray">청년 지표 성장</div>
+                                <div data-i18n="stat_val_2" class="text-sm sm:text-xl font-bold text-white">최정상 등급</div>
                             </div>
                             <div>
-                                <div class="text-[10px] sm:text-xs text-brandGray">신인 유망 영입</div>
-                                <div class="text-sm sm:text-xl font-bold text-white">#1 Pick</div>
+                                <div data-i18n="stat_lbl_3" class="text-[10px] sm:text-xs text-brandGray">신인 유망 영입</div>
+                                <div data-i18n="stat_val_3" class="text-sm sm:text-xl font-bold text-white">전체 1순위</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Timeline Content 2 (2023-2024) -->
                     <div id="content-2023" class="timeline-content space-y-4 sm:space-y-6 hidden">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-brandOrange bg-brandOrange/10 px-2.5 py-1 rounded">Return of the King</span>
-                        <h3 class="text-xl sm:text-3xl font-bold text-white leading-snug">괴물의 귀환과 마주한 비상의 불씨</h3>
-                        <p class="text-brandGray text-xs sm:text-base leading-relaxed">
+                        <span data-i18n="badge_2023" class="text-[10px] font-bold uppercase tracking-wider text-brandOrange bg-brandOrange/10 px-2.5 py-1 rounded">Return of the King</span>
+                        <h3 data-i18n="content_2023_h" class="text-xl sm:text-3xl font-bold text-white leading-snug">괴물의 귀환과 마주한 비상의 불씨</h3>
+                        <p data-i18n="content_2023_p" class="text-brandGray text-xs sm:text-base leading-relaxed">
                             메이저리그를 제패했던 코리안 몬스터의 감격적인 복귀, 그리고 그와 함께 대폭발한 대전 구장. 노련한 베테랑들의 완벽한 클래스와 신성들의 폭발적 장타력이 맞물리며, '언제나 약체'라는 딱지를 영원히 찢어발기기 시작했습니다.
                         </p>
                         <div class="grid grid-cols-3 gap-3 pt-4 border-t border-white/10">
                             <div>
-                                <div class="text-[10px] sm:text-xs text-brandGray">에이스 복귀</div>
-                                <div class="text-sm sm:text-xl font-bold text-white">류현진</div>
+                                <div data-i18n="stat_lbl_4" class="text-[10px] sm:text-xs text-brandGray">에이스 복귀</div>
+                                <div data-i18n="stat_val_4" class="text-sm sm:text-xl font-bold text-white">류현진</div>
                             </div>
                             <div>
-                                <div class="text-[10px] sm:text-xs text-brandGray">홈 경기 전석 매진</div>
-                                <div class="text-sm sm:text-xl font-bold text-white">연속 17회</div>
+                                <div data-i18n="stat_lbl_5" class="text-[10px] sm:text-xs text-brandGray">홈 경기 전석 매진</div>
+                                <div data-i18n="stat_val_5" class="text-sm sm:text-xl font-bold text-white">연속 17회</div>
                             </div>
                             <div>
-                                <div class="text-[10px] sm:text-xs text-brandGray">정규 시즌 홈런왕</div>
-                                <div class="text-sm sm:text-xl font-bold text-white">노시환</div>
+                                <div data-i18n="stat_lbl_6" class="text-[10px] sm:text-xs text-brandGray">정규 시즌 홈런왕</div>
+                                <div data-i18n="stat_val_6" class="text-sm sm:text-xl font-bold text-white">노시환</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Timeline Content 3 (2025-2026) -->
                     <div id="content-2025" class="timeline-content space-y-4 sm:space-y-6 hidden">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-brandOrange bg-brandOrange/10 px-2.5 py-1 rounded">Glorious Flight</span>
-                        <h3 class="text-xl sm:text-3xl font-bold text-white leading-snug">2026년 마침내 완성된 가을의 기적</h3>
-                        <p class="text-brandGray text-xs sm:text-base leading-relaxed">
+                        <span data-i18n="badge_2025" class="text-[10px] font-bold uppercase tracking-wider text-brandOrange bg-brandOrange/10 px-2.5 py-1 rounded">Glorious Flight</span>
+                        <h3 data-i18n="content_2025_h" class="text-xl sm:text-3xl font-bold text-white leading-snug">2026년 마침내 완성된 가을의 기적</h3>
+                        <p data-i18n="content_2025_p" class="text-brandGray text-xs sm:text-base leading-relaxed">
                             완벽히 무르익은 신구조화의 다이내믹 라인업. 2026년 한화이글스는 상위권 구도를 뒤흔들며 리그에서 가장 무서운 팀으로 거듭났습니다. 패배를 사랑해 주던 팬들의 눈물은 이제 뜨거운 환희와 기쁨의 주황빛 함성으로 치환됩니다.
                         </p>
                         <div class="grid grid-cols-3 gap-3 pt-4 border-t border-white/10">
                             <div>
-                                <div class="text-[10px] sm:text-xs text-brandGray">2026 최고 구속</div>
+                                <div data-i18n="stat_lbl_7" class="text-[10px] sm:text-xs text-brandGray">2026 최고 구속</div>
                                 <div class="text-sm sm:text-xl font-bold text-brandOrange font-headline">160.1 km/h</div>
                             </div>
                             <div>
-                                <div class="text-[10px] sm:text-xs text-brandGray">시즌 가을야구</div>
-                                <div class="text-sm sm:text-xl font-bold text-white">진출 확정</div>
+                                <div data-i18n="stat_lbl_8" class="text-[10px] sm:text-xs text-brandGray">시즌 가을야구</div>
+                                <div data-i18n="stat_val_8" class="text-sm sm:text-xl font-bold text-white">진출 확정</div>
                             </div>
                             <div>
-                                <div class="text-[10px] sm:text-xs text-brandGray">팬덤 충성도 지수</div>
-                                <div class="text-sm sm:text-xl font-bold text-white">KBO 1위</div>
+                                <div data-i18n="stat_lbl_9" class="text-[10px] sm:text-xs text-brandGray">팬덤 충성도 지수</div>
+                                <div data-i18n="stat_val_9" class="text-sm sm:text-xl font-bold text-white">KBO 최고</div>
                             </div>
                         </div>
                     </div>
@@ -328,15 +375,15 @@
             
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-16">
                 <div>
-                    <h2 class="font-headline text-2xl sm:text-4xl md:text-5xl text-white uppercase tracking-tight">
+                    <h2 data-i18n="point_2_title" class="font-headline text-2xl sm:text-4xl md:text-5xl text-white uppercase tracking-tight">
                         POINT 02. <span class="text-brandOrange font-black">독수리 주역들</span>
                     </h2>
-                    <p class="text-brandGray mt-2 sm:mt-4 text-sm sm:text-lg max-w-2xl">
+                    <p data-i18n="point_2_desc" class="text-brandGray mt-2 sm:mt-4 text-sm sm:text-lg max-w-2xl">
                         팀을 지탱하는 국보급 베테랑과 마운드를 지배하는 젊은 청년 독수리들. <br>
                         한화이글스 전설을 써나가는 핵심 주역들의 디테일한 라인업을 소개합니다.
                     </p>
                 </div>
-                <!-- Navigation Arrows for Slider -->
+                <!-- Navigation Arrows -->
                 <div class="flex gap-2 mt-4 md:mt-0">
                     <button onclick="slidePlayers('left')" class="p-2.5 sm:p-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all">
                         <i class="fa-solid fa-arrow-left text-sm sm:text-lg"></i>
@@ -347,183 +394,12 @@
                 </div>
             </div>
 
-            <!-- Player cards horizontal container with custom viewport -->
+            <!-- Player cards horizontal container -->
             <div id="sliderViewport" class="overflow-x-auto scroll-smooth flex gap-4 sm:gap-6 pb-6 snap-x snap-mandatory">
                 
-                <!-- Card 1: Ryu Hyun-Jin -->
-                <div class="player-card min-w-[260px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('ryu')">
-                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-4xl sm:text-5xl opacity-10 font-black select-none">99</div>
-                    <div>
-                        <div class="relative w-full h-48 sm:h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-4 sm:mb-6 flex items-end justify-center">
-                            <svg class="w-28 h-28 sm:w-40 sm:h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
-                                <circle cx="50" cy="35" r="20" />
-                                <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
-                            </svg>
-                            <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
-                                <span class="text-[10px] font-bold text-brandOrange">PITCHER</span>
-                            </div>
-                        </div>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">류현진 <span class="text-xs font-normal text-brandGray ml-1">LHP</span></h3>
-                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"코리안 몬스터의 위대한 대전 귀환, 마운드의 영원한 지배자"</p>
-                    </div>
-                    <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex justify-between items-center text-xs sm:text-sm">
-                        <span class="text-brandGray">통산 승수</span>
-                        <span class="font-bold text-white font-headline">100+ Win</span>
-                    </div>
-                </div>
-
-                <!-- Card 2: Chae Eun-Seong -->
-                <div class="player-card min-w-[260px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('chae')">
-                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-4xl sm:text-5xl opacity-10 font-black select-none">22</div>
-                    <div>
-                        <div class="relative w-full h-48 sm:h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-4 sm:mb-6 flex items-end justify-center">
-                            <svg class="w-28 h-28 sm:w-40 sm:h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
-                                <circle cx="50" cy="35" r="20" />
-                                <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
-                            </svg>
-                            <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
-                                <span class="text-[10px] font-bold text-brandOrange">INFIELDER</span>
-                            </div>
-                        </div>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">채은성 <span class="text-xs font-normal text-brandGray ml-1">1B</span></h3>
-                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"그라운드를 지휘하는 이글스의 캡틴, 해결사의 클래스"</p>
-                    </div>
-                    <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex justify-between items-center text-xs sm:text-sm">
-                        <span class="text-brandGray">포지션</span>
-                        <span class="font-bold text-white font-headline">주장 / 1루수</span>
-                    </div>
-                </div>
-
-                <!-- Card 3: Moon Dong-Ju -->
-                <div class="player-card min-w-[260px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('moon')">
-                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-4xl sm:text-5xl opacity-10 font-black select-none">1</div>
-                    <div>
-                        <div class="relative w-full h-48 sm:h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-4 sm:mb-6 flex items-end justify-center">
-                            <svg class="w-28 h-28 sm:w-40 sm:h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
-                                <circle cx="50" cy="35" r="20" />
-                                <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
-                            </svg>
-                            <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
-                                <span class="text-[10px] font-bold text-brandOrange">PITCHER</span>
-                            </div>
-                        </div>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">문동주 <span class="text-xs font-normal text-brandGray ml-1">RHP</span></h3>
-                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"대한민국 최고 구속 160.1km를 돌파한 독수리 광속 에이스"</p>
-                    </div>
-                    <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex justify-between items-center text-xs sm:text-sm">
-                        <span class="text-brandGray">최고 구속</span>
-                        <span class="font-bold text-white font-headline text-brandOrange">160.1 km/h</span>
-                    </div>
-                </div>
-
-                <!-- Card 4: Noh Si-Hwan -->
-                <div class="player-card min-w-[260px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('noh')">
-                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-4xl sm:text-5xl opacity-10 font-black select-none">8</div>
-                    <div>
-                        <div class="relative w-full h-48 sm:h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-4 sm:mb-6 flex items-end justify-center">
-                            <svg class="w-28 h-28 sm:w-40 sm:h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
-                                <circle cx="50" cy="35" r="20" />
-                                <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
-                            </svg>
-                            <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
-                                <span class="text-[10px] font-bold text-brandOrange">INFIELDER</span>
-                            </div>
-                        </div>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">노시환 <span class="text-xs font-normal text-brandGray ml-1">3B</span></h3>
-                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"KBO 대표 홈런왕이자 국가대표 해결사 타선을 지휘하는 슬러거"</p>
-                    </div>
-                    <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex justify-between items-center text-xs sm:text-sm">
-                        <span class="text-brandGray">대표 타이틀</span>
-                        <span class="font-bold text-white font-headline">홈런왕 & 타점왕</span>
-                    </div>
-                </div>
-
-                <!-- Card 5: Kim Seo-Hyeon -->
-                <div class="player-card min-w-[260px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('kim')">
-                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-4xl sm:text-5xl opacity-10 font-black select-none">44</div>
-                    <div>
-                        <div class="relative w-full h-48 sm:h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-4 sm:mb-6 flex items-end justify-center">
-                            <svg class="w-28 h-28 sm:w-40 sm:h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
-                                <circle cx="50" cy="35" r="20" />
-                                <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
-                            </svg>
-                            <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
-                                <span class="text-[10px] font-bold text-brandOrange">PITCHER</span>
-                            </div>
-                        </div>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">김서현 <span class="text-xs font-normal text-brandGray ml-1">RHP</span></h3>
-                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"프리미어 12를 지배한 불꽃 파워피처, 최고의 차세대 마무리"</p>
-                    </div>
-                    <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex justify-between items-center text-xs sm:text-sm">
-                        <span class="text-brandGray">지명 순위</span>
-                        <span class="font-bold text-white font-headline">전체 1순위 (2023)</span>
-                    </div>
-                </div>
-
-                <!-- Card 6: Joo Hyun-Sang -->
-                <div class="player-card min-w-[260px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('joo')">
-                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-4xl sm:text-5xl opacity-10 font-black select-none">66</div>
-                    <div>
-                        <div class="relative w-full h-48 sm:h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-4 sm:mb-6 flex items-end justify-center">
-                            <svg class="w-28 h-28 sm:w-40 sm:h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
-                                <circle cx="50" cy="35" r="20" />
-                                <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
-                            </svg>
-                            <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
-                                <span class="text-[10px] font-bold text-brandOrange">PITCHER</span>
-                            </div>
-                        </div>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">주현상 <span class="text-xs font-normal text-brandGray ml-1">RHP</span></h3>
-                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"한화의 뒷문을 책임지는 최고의 철벽 마무리 수호신"</p>
-                    </div>
-                    <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex justify-between items-center text-xs sm:text-sm">
-                        <span class="text-brandGray">핵심 임무</span>
-                        <span class="font-bold text-white font-headline">클로저 (Closer)</span>
-                    </div>
-                </div>
-
-                <!-- Card 7: Hwang Jun-Seo -->
-                <div class="player-card min-w-[260px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('hwang')">
-                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-4xl sm:text-5xl opacity-10 font-black select-none">29</div>
-                    <div>
-                        <div class="relative w-full h-48 sm:h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-4 sm:mb-6 flex items-end justify-center">
-                            <svg class="w-28 h-28 sm:w-40 sm:h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
-                                <circle cx="50" cy="35" r="20" />
-                                <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
-                            </svg>
-                            <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
-                                <span class="text-[10px] font-bold text-brandOrange">PITCHER</span>
-                            </div>
-                        </div>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">황준서 <span class="text-xs font-normal text-brandGray ml-1">LHP</span></h3>
-                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"1순위 지명의 위엄, 날카로운 스플리터의 차세대 좌완 에이스"</p>
-                    </div>
-                    <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex justify-between items-center text-xs sm:text-sm">
-                        <span class="text-brandGray">지명 순위</span>
-                        <span class="font-bold text-white font-headline">전체 1순위 (2024)</span>
-                    </div>
-                </div>
-
-                <!-- Card 8: Hwang Young-Muk -->
-                <div class="player-card min-w-[260px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('muk')">
-                    <div class="absolute right-4 top-4 text-brandOrange font-headline text-4xl sm:text-5xl opacity-10 font-black select-none">95</div>
-                    <div>
-                        <div class="relative w-full h-48 sm:h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-4 sm:mb-6 flex items-end justify-center">
-                            <svg class="w-28 h-28 sm:w-40 sm:h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
-                                <circle cx="50" cy="35" r="20" />
-                                <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
-                            </svg>
-                            <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
-                                <span class="text-[10px] font-bold text-brandOrange">INFIELDER</span>
-                            </div>
-                        </div>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">황영묵 <span class="text-xs font-normal text-brandGray ml-1">IF</span></h3>
-                        <p class="text-xs text-brandGray mt-1 leading-relaxed">"허슬 플레이의 대명사, 그라운드의 묵토비이자 만능 수비 열정맨"</p>
-                    </div>
-                    <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex justify-between items-center text-xs sm:text-sm">
-                        <span class="text-brandGray">팬덤 별명</span>
-                        <span class="font-bold text-white font-headline">묵토비 (Hustle)</span>
-                    </div>
+                <!-- Player Card Generator Container (Filled & Managed by Javascript for Translation & Scalability) -->
+                <div id="playersCardContainer" class="flex gap-4 sm:gap-6">
+                    <!-- Javascript will inject 8 player cards here -->
                 </div>
 
             </div>
@@ -546,12 +422,12 @@
                 </div>
                 <p id="modalPlayerBio" class="text-brandGray text-xs sm:text-base leading-relaxed mb-6">설명</p>
                 <div class="space-y-4">
-                    <h4 class="text-white font-bold border-b border-white/10 pb-2 text-sm sm:text-base">2026 Season Forecast 스탯</h4>
+                    <h4 data-i18n="modal_stats_h" class="text-white font-bold border-b border-white/10 pb-2 text-sm sm:text-base">2026 Season Forecast 스탯</h4>
                     <div class="grid grid-cols-2 gap-3" id="modalPlayerStats">
                         <!-- Stats filled by script -->
                     </div>
                 </div>
-                <button onclick="closePlayerModal()" class="w-full bg-brandOrange hover:bg-orange-600 text-white font-bold py-3 sm:py-3.5 rounded-xl transition-all mt-6 sm:mt-8 text-sm sm:text-base">
+                <button onclick="closePlayerModal()" data-i18n="modal_close" class="w-full bg-brandOrange hover:bg-orange-600 text-white font-bold py-3 sm:py-3.5 rounded-xl transition-all mt-6 sm:mt-8 text-sm sm:text-base">
                     닫기
                 </button>
             </div>
@@ -560,17 +436,15 @@
 
     <!-- SECTION 4: 불꽃의 함성 (The Passion) -->
     <section id="passion" class="py-16 sm:py-24 bg-gradient-to-b from-brandNavy to-slate-950 relative border-t border-white/5">
-        
-        <!-- Animated backdrop glow representing orange stadium lights -->
         <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-72 sm:h-96 bg-brandOrange/10 rounded-full blur-[100px] bg-pulse-glow"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
-                <h2 class="font-headline text-2xl sm:text-4xl md:text-5xl text-white uppercase tracking-tight">
+                <h2 data-i18n="point_3_title" class="font-headline text-2xl sm:text-4xl md:text-5xl text-white uppercase tracking-tight">
                     POINT 03. <span class="text-brandOrange font-black">불꽃의 함성</span>
                 </h2>
                 <div class="w-16 sm:w-20 h-1 bg-brandOrange mx-auto my-4 sm:my-6"></div>
-                <p class="text-brandGray text-sm sm:text-lg leading-relaxed px-2">
+                <p data-i18n="point_3_desc" class="text-brandGray text-sm sm:text-lg leading-relaxed px-2">
                     세상에서 가장 뜨거운 대전 한화생명 이글스파크의 함성을 내 손안에서 느껴보세요.<br>
                     아래 응원 콘솔의 버튼들을 클릭하여 나만의 오렌지빛 육성 응원 비트를 연주할 수 있습니다.
                 </p>
@@ -587,8 +461,8 @@
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-red-500/10 border border-red-500/30 text-red-500 text-[10px] font-bold uppercase tracking-wider mb-3">
                                 <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span> Live Audio Synthesizer
                             </span>
-                            <h3 class="text-xl sm:text-3xl font-extrabold text-white">대전 직관의 전율을 연주하다</h3>
-                            <p class="text-brandGray text-xs sm:text-sm leading-relaxed mt-2">
+                            <h3 data-i18n="sound_title" class="text-xl sm:text-3xl font-extrabold text-white">대전 직관의 전율을 연주하다</h3>
+                            <p data-i18n="sound_desc" class="text-brandGray text-xs sm:text-sm leading-relaxed mt-2">
                                 우리가 함께 지르는 주황빛 함성 뒤에는 항상 가슴을 울리던 힘찬 응원 드럼과 열기가 있었습니다. 웹 브라우저 오디오 시스템으로 직접 제작한 4가지 오렌지빛 시그니처 사운드를 들어보세요!
                             </p>
                         </div>
@@ -596,19 +470,19 @@
                         <!-- Synthesizer buttons matrix -->
                         <div class="grid grid-cols-2 gap-3 pt-4">
                             <button onclick="playSynthSound('drum')" class="p-3.5 sm:p-4 min-h-[52px] bg-white/5 hover:bg-brandOrange/20 border border-white/10 hover:border-brandOrange rounded-xl transition-all duration-300 flex items-center justify-between group active:scale-95">
-                                <span class="text-white font-bold text-xs sm:text-sm">1. 함성 베이스 북</span>
+                                <span data-i18n="pad_1" class="text-white font-bold text-xs sm:text-sm">1. 함성 베이스 북</span>
                                 <i class="fa-solid fa-drum text-brandGray group-hover:text-brandOrange transition-colors"></i>
                             </button>
                             <button onclick="playSynthSound('clap')" class="p-3.5 sm:p-4 min-h-[52px] bg-white/5 hover:bg-brandOrange/20 border border-white/10 hover:border-brandOrange rounded-xl transition-all duration-300 flex items-center justify-between group active:scale-95">
-                                <span class="text-white font-bold text-xs sm:text-sm">2. 열광의 박수</span>
+                                <span data-i18n="pad_2" class="text-white font-bold text-xs sm:text-sm">2. 열광의 박수</span>
                                 <i class="fa-solid fa-hands-clapping text-brandGray group-hover:text-brandOrange transition-colors"></i>
                             </button>
                             <button onclick="playSynthSound('synth')" class="p-3.5 sm:p-4 min-h-[52px] bg-white/5 hover:bg-brandOrange/20 border border-white/10 hover:border-brandOrange rounded-xl transition-all duration-300 flex items-center justify-between group active:scale-95">
-                                <span class="text-white font-bold text-xs sm:text-sm">3. 승리의 팡파르</span>
+                                <span data-i18n="pad_3" class="text-white font-bold text-xs sm:text-sm">3. 승리의 팡파르</span>
                                 <i class="fa-solid fa-wind text-brandGray group-hover:text-brandOrange transition-colors"></i>
                             </button>
                             <button onclick="playSynthSound('cheer')" class="p-3.5 sm:p-4 min-h-[52px] bg-white/5 hover:bg-brandOrange/20 border border-white/10 hover:border-brandOrange rounded-xl transition-all duration-300 flex items-center justify-between group active:scale-95">
-                                <span class="text-white font-bold text-xs sm:text-sm">4. 고주파 함성음</span>
+                                <span data-i18n="pad_4" class="text-white font-bold text-xs sm:text-sm">4. 고주파 함성음</span>
                                 <i class="fa-solid fa-volume-high text-brandGray group-hover:text-brandOrange transition-colors"></i>
                             </button>
                         </div>
@@ -617,19 +491,19 @@
                     <!-- Interactive Mascot & Lyrics Visualizer -->
                     <div class="md:col-span-5 bg-black/40 border border-white/10 rounded-2xl p-5 sm:p-6 flex flex-col justify-between h-full min-h-[220px] sm:min-h-[280px]">
                         <div>
-                            <span class="text-[10px] text-brandGray uppercase tracking-widest block mb-3">Official Cheer Guide</span>
-                            <h4 class="font-bold text-white text-base sm:text-lg flex items-center gap-2">
+                            <span data-i18n="guide_tag" class="text-[10px] text-brandGray uppercase tracking-widest block mb-3">Official Cheer Guide</span>
+                            <h4 data-i18n="cheer_anthem_title" class="font-bold text-white text-base sm:text-lg flex items-center gap-2">
                                 <i class="fa-solid fa-quote-left text-brandOrange text-sm"></i> 최! 강! 한! 화! 응원가
                             </h4>
-                            <div class="mt-3 sm:mt-4 space-y-1.5 text-brandGray text-xs sm:text-sm">
-                                <p class="text-white font-bold tracking-wider animate-pulse">"끝까지 타오르는 오렌지빛 함성!"</p>
-                                <p>"나는 행복합니다~ 나는 행복합니다~"</p>
-                                <p>"한화라서 행복합니다! 사랑한다 최강한화!"</p>
+                            <div id="lyricsContainer" class="mt-3 sm:mt-4 space-y-1.5 text-brandGray text-xs sm:text-sm">
+                                <p data-i18n="lyric_1" class="text-white font-bold tracking-wider animate-pulse">"끝까지 타오르는 오렌지빛 함성!"</p>
+                                <p data-i18n="lyric_2">"나는 행복합니다~ 나는 행복합니다~"</p>
+                                <p data-i18n="lyric_3">"한화라서 행복합니다! 사랑한다 최강한화!"</p>
                             </div>
                         </div>
                         <div class="pt-5 border-t border-white/10">
                             <!-- Play continuous rhythm demo -->
-                            <button id="btnPlayRhythm" onclick="toggleRhythmLoop()" class="w-full bg-brandOrange hover:bg-orange-600 text-white font-extrabold py-3 rounded-xl flex items-center justify-center gap-2 transition-all text-xs sm:text-sm active:scale-95">
+                            <button id="btnPlayRhythm" onclick="toggleRhythmLoop()" data-i18n="rhythm_btn_on" class="w-full bg-brandOrange hover:bg-orange-600 text-white font-extrabold py-3 rounded-xl flex items-center justify-center gap-2 transition-all text-xs sm:text-sm active:scale-95">
                                 <i class="fa-solid fa-play"></i> 경기장 응원 루프 켜기
                             </button>
                         </div>
@@ -648,12 +522,12 @@
                 
                 <!-- Left Content: Live Scoreboard Widget -->
                 <div class="lg:col-span-7 bg-gradient-to-br from-brandNavy to-slate-900 border border-white/10 rounded-3xl p-6 sm:p-10 flex flex-col justify-between relative overflow-hidden shadow-xl min-h-[320px]">
-                    <div class="absolute right-0 top-0 bg-brandOrange/10 text-brandOrange px-4 sm:px-6 py-2 rounded-bl-3xl font-bold text-[10px] sm:text-xs uppercase tracking-widest">
+                    <div data-i18n="kbo_tag" class="absolute right-0 top-0 bg-brandOrange/10 text-brandOrange px-4 sm:px-6 py-2 rounded-bl-3xl font-bold text-[10px] sm:text-xs uppercase tracking-widest">
                         2026 KBO LIVE MATCH
                     </div>
                     
                     <div class="pt-4 sm:pt-0">
-                        <h3 class="font-headline text-xl sm:text-3xl text-white tracking-tight mb-6 sm:mb-8">당일 경기 대시보드</h3>
+                        <h3 data-i18n="board_title" class="font-headline text-xl sm:text-3xl text-white tracking-tight mb-6 sm:mb-8">당일 경기 대시보드</h3>
                         
                         <div class="flex items-center justify-around gap-2 sm:gap-4 text-center">
                             <!-- Team A: Hanwha -->
@@ -661,15 +535,15 @@
                                 <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-brandOrange flex items-center justify-center text-white text-xl sm:text-3xl font-headline font-black shadow-lg">
                                     HE
                                 </div>
-                                <span class="font-bold text-sm sm:text-lg text-white mt-2 sm:mt-3">한화 이글스</span>
-                                <span class="text-[10px] sm:text-xs text-brandGray mt-1">선발: 류현진</span>
+                                <span data-i18n="team_a_name" class="font-bold text-sm sm:text-lg text-white mt-2 sm:mt-3">한화 이글스</span>
+                                <span data-i18n="team_a_starting" class="text-[10px] sm:text-xs text-brandGray mt-1">선발: 류현진</span>
                             </div>
                             
-                            <!-- VS Indicator / State -->
+                            <!-- VS Indicator -->
                             <div class="flex flex-col items-center">
-                                <span class="text-[9px] sm:text-xs text-brandOrange font-bold uppercase tracking-wider bg-brandOrange/10 px-2 py-0.5 rounded mb-1 sm:mb-2">대기중</span>
+                                <span data-i18n="match_status" class="text-[9px] sm:text-xs text-brandOrange font-bold uppercase tracking-wider bg-brandOrange/10 px-2 py-0.5 rounded mb-1 sm:mb-2">대기중</span>
                                 <span class="font-headline text-2xl sm:text-3xl font-bold text-white/40">VS</span>
-                                <span class="text-[9px] sm:text-xs text-brandGray mt-1.5 sm:mt-2 text-center leading-none">대전 이글스파크</span>
+                                <span data-i18n="stadium_name" class="text-[9px] sm:text-xs text-brandGray mt-1.5 sm:mt-2 text-center leading-none">대전 이글스파크</span>
                             </div>
 
                             <!-- Team B: KIA -->
@@ -677,8 +551,8 @@
                                 <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-red-700 flex items-center justify-center text-white text-xl sm:text-3xl font-headline font-black shadow-lg">
                                     KIA
                                 </div>
-                                <span class="font-bold text-sm sm:text-lg text-white mt-2 sm:mt-3">KIA 타이거즈</span>
-                                <span class="text-[10px] sm:text-xs text-brandGray mt-1">선발: 양현종</span>
+                                <span data-i18n="team_b_name" class="font-bold text-sm sm:text-lg text-white mt-2 sm:mt-3">KIA 타이거즈</span>
+                                <span data-i18n="team_b_starting" class="text-[10px] sm:text-xs text-brandGray mt-1">선발: 양현종</span>
                             </div>
                         </div>
                     </div>
@@ -686,9 +560,9 @@
                     <div class="mt-8 sm:mt-12 pt-5 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4">
                         <div class="flex items-center gap-2.5">
                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                            <p class="text-xs sm:text-sm text-brandGray text-center sm:text-left">현재 대전 기온: <span class="text-white font-semibold">22.5°C (경기 진행 쾌적)</span></p>
+                            <p class="text-xs sm:text-sm text-brandGray text-center sm:text-left"><span data-i18n="weather_prefix">현재 대전 기온: </span><span class="text-white font-semibold">22.5°C (경기 진행 쾌적)</span></p>
                         </div>
-                        <a href="https://www.hanwhaeagles.co.kr/GR/PC/GRPC01.do" target="_blank" class="bg-brandOrange hover:bg-orange-600 text-white font-extrabold px-5 sm:px-6 py-3 rounded-xl transition-all shadow-md flex items-center gap-2 text-xs sm:text-sm w-full sm:w-auto justify-center active:scale-95">
+                        <a href="https://www.hanwhaeagles.co.kr/GR/PC/GRPC01.do" target="_blank" data-i18n="schedule_btn" class="bg-brandOrange hover:bg-orange-600 text-white font-extrabold px-5 sm:px-6 py-3 rounded-xl transition-all shadow-md flex items-center gap-2 text-xs sm:text-sm w-full sm:w-auto justify-center active:scale-95">
                             공식 경기 일정 확인 <i class="fa-solid fa-arrow-right-long"></i>
                         </a>
                     </div>
@@ -697,9 +571,9 @@
                 <!-- Right Content: Brand Vision & Quick links -->
                 <div class="lg:col-span-5 bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-10 flex flex-col justify-between shadow-xl min-h-[300px]">
                     <div>
-                        <span class="text-[10px] font-bold text-brandOrange uppercase tracking-widest">Eagles Premium Store</span>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white mt-1 sm:mt-2 mb-4 sm:mb-6">오렌지빛 영혼을 착용하다</h3>
-                        <p class="text-brandGray text-xs sm:text-sm leading-relaxed mb-6">
+                        <span data-i18n="shop_tag" class="text-[10px] font-bold text-brandOrange uppercase tracking-widest">Eagles Premium Store</span>
+                        <h3 data-i18n="shop_title" class="text-xl sm:text-2xl font-bold text-white mt-1 sm:mt-2 mb-4 sm:mb-6">오렌지빛 영혼을 착용하다</h3>
+                        <p data-i18n="shop_desc" class="text-brandGray text-xs sm:text-sm leading-relaxed mb-6">
                             한화 이글스 공식 굿즈와 2026 시즌 어센틱 유니폼을 만나보세요. 경기장에 주황빛 물결을 더할 완벽한 기어들이 준비되어 있습니다.
                         </p>
                         
@@ -707,23 +581,23 @@
                             <a href="#dashboard" onclick="openShopDemo('uniform')" class="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all group">
                                 <div class="flex items-center gap-3">
                                     <i class="fa-solid fa-shirt text-brandOrange text-base sm:text-lg"></i>
-                                    <span class="text-white font-bold text-xs sm:text-sm">2026 어센틱 오렌지 유니폼</span>
+                                    <span data-i18n="shop_item_1" class="text-white font-bold text-xs sm:text-sm">2026 어센틱 오렌지 유니폼</span>
                                 </div>
-                                <span class="text-[10px] sm:text-xs text-brandGray group-hover:text-white transition-colors">구경하기 <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                                <span class="text-[10px] sm:text-xs text-brandGray group-hover:text-white transition-colors"><span data-i18n="view_btn">구경하기</span> <i class="fa-solid fa-chevron-right ml-1"></i></span>
                             </a>
                             <a href="#dashboard" onclick="openShopDemo('cap')" class="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all group">
                                 <div class="flex items-center gap-3">
                                     <i class="fa-solid fa-graduation-cap text-brandOrange text-base sm:text-lg"></i>
-                                    <span class="text-white font-bold text-xs sm:text-sm">이글스 어센틱 어반 캡</span>
+                                    <span data-i18n="shop_item_2" class="text-white font-bold text-xs sm:text-sm">이글스 어센틱 어반 캡</span>
                                 </div>
-                                <span class="text-[10px] sm:text-xs text-brandGray group-hover:text-white transition-colors">구경하기 <i class="fa-solid fa-chevron-right ml-1"></i></span>
+                                <span class="text-[10px] sm:text-xs text-brandGray group-hover:text-white transition-colors"><span data-i18n="view_btn">구경하기</span> <i class="fa-solid fa-chevron-right ml-1"></i></span>
                             </a>
                         </div>
                     </div>
 
                     <div class="mt-6 sm:mt-8 pt-5 border-t border-white/10 flex items-center justify-between text-[10px] sm:text-xs text-brandGray">
                         <span>© EAGLES PARTNERSHIP STORE</span>
-                        <a href="https://www.hanwhaeagles.co.kr" target="_blank" class="text-brandOrange hover:underline">공식 홈페이지 <i class="fa-solid fa-up-right-from-square text-[9px]"></i></a>
+                        <a href="https://www.hanwhaeagles.co.kr" target="_blank" class="text-brandOrange hover:underline"><span data-i18n="btn_official">공식 홈페이지</span> <i class="fa-solid fa-up-right-from-square text-[9px]"></i></a>
                     </div>
                 </div>
 
@@ -738,7 +612,7 @@
             <div>
                 <h4 class="font-bold text-white text-xs sm:text-sm" id="shopAlertTitle">상품 확인 완료</h4>
                 <p class="text-brandGray text-[10px] sm:text-xs mt-1 leading-relaxed" id="shopAlertDesc">구단 굿즈 스토어 링크를 확인했습니다.</p>
-                <button onclick="closeShopAlert()" class="text-brandOrange text-xs font-bold mt-3 hover:underline block">알림 닫기</button>
+                <button onclick="closeShopAlert()" data-i18n="modal_close" class="text-brandOrange text-xs font-bold mt-3 hover:underline block">닫기</button>
             </div>
         </div>
     </div>
@@ -755,7 +629,7 @@
                         </svg>
                         <span class="font-headline text-lg tracking-wider">HANWHA <span class="text-brandOrange">EAGLES</span></span>
                     </div>
-                    <p class="text-xs sm:text-sm leading-relaxed max-w-sm mb-6">
+                    <p data-i18n="footer_brand_desc" class="text-xs sm:text-sm leading-relaxed max-w-sm mb-6">
                         "끝까지 타오르는 오렌지빛 함성"<br>
                         한화이글스는 긴 시간 동안의 인고를 딛고 언제나 대전을 지켜준 팬들의 불꽃같은 열정으로 매일 기적의 비상을 꿈꾸며 증명해 나가고 있습니다.
                     </p>
@@ -766,29 +640,29 @@
                     </div>
                 </div>
                 <div>
-                    <h4 class="font-bold text-white text-xs sm:text-sm uppercase tracking-widest mb-3 sm:mb-4">구단 바로가기</h4>
+                    <h4 data-i18n="footer_col_1_title" class="font-bold text-white text-xs sm:text-sm uppercase tracking-widest mb-3 sm:mb-4">구단 바로가기</h4>
                     <ul class="space-y-1.5 sm:space-y-2 text-xs">
-                        <li><a href="#narrative" class="hover:text-brandOrange transition-colors">이글스 히스토리</a></li>
-                        <li><a href="#heroes" class="hover:text-brandOrange transition-colors">선수단 프로필</a></li>
-                        <li><a href="#passion" class="hover:text-brandOrange transition-colors">응원가 리스트</a></li>
-                        <li><a href="#dashboard" class="hover:text-brandOrange transition-colors">경기 일정</a></li>
+                        <li><a href="#narrative" data-i18n="nav_narrative" class="hover:text-brandOrange transition-colors">이글스 히스토리</a></li>
+                        <li><a href="#heroes" data-i18n="nav_heroes" class="hover:text-brandOrange transition-colors">선수단 프로필</a></li>
+                        <li><a href="#passion" data-i18n="nav_passion" class="hover:text-brandOrange transition-colors">응원가 리스트</a></li>
+                        <li><a href="#dashboard" data-i18n="nav_dashboard" class="hover:text-brandOrange transition-colors">경기 일정</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-bold text-white text-xs sm:text-sm uppercase tracking-widest mb-3 sm:mb-4">체험 기능</h4>
+                    <h4 data-i18n="footer_col_2_title" class="font-bold text-white text-xs sm:text-sm uppercase tracking-widest mb-3 sm:mb-4">체험 기능</h4>
                     <ul class="space-y-1.5 sm:space-y-2 text-xs">
-                        <li><a href="#hero" class="hover:text-brandOrange transition-colors">불꽃 캔버스 인터랙션</a></li>
-                        <li><a href="#passion" class="hover:text-brandOrange transition-colors">오디오 응원비트 연주</a></li>
-                        <li><a href="#dashboard" class="hover:text-brandOrange transition-colors">실시간 대시보드</a></li>
+                        <li><a href="#hero" data-i18n="f_feat_1" class="hover:text-brandOrange transition-colors">불꽃 캔버스 인터랙션</a></li>
+                        <li><a href="#passion" data-i18n="f_feat_2" class="hover:text-brandOrange transition-colors">오디오 응원비트 연주</a></li>
+                        <li><a href="#dashboard" data-i18n="f_feat_3" class="hover:text-brandOrange transition-colors">실시간 대시보드</a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="pt-6 sm:pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] sm:text-xs">
-                <p class="text-center sm:text-left">© 2026 한화이글스 공식 브랜딩 기획 디자인 가이드. All rights reserved.</p>
+                <p data-i18n="copyright" class="text-center sm:text-left">© 2026 한화이글스 공식 브랜딩 기획 디자인 가이드. All rights reserved.</p>
                 <div class="flex gap-4 sm:gap-6">
-                    <a href="#" class="hover:underline">개인정보 처리방침</a>
-                    <a href="#" class="hover:underline">이용약관</a>
+                    <a href="#" data-i18n="f_privacy" class="hover:underline">개인정보 처리방침</a>
+                    <a href="#" data-i18n="f_terms" class="hover:underline">이용약관</a>
                 </div>
             </div>
         </div>
@@ -796,6 +670,350 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
+        /* Multi-language Dictionary Mapping */
+        const languageDictionary = {
+            ko: {
+                nav_home: "HOME",
+                nav_narrative: "불꽃 서사",
+                nav_heroes: "선수 라인업",
+                nav_passion: "응원 광장",
+                nav_dashboard: "오늘의 독수리",
+                btn_official: "공식 홈페이지",
+                hero_tag: "🔥 2026 Season: Rebirth of Eagles",
+                hero_title: '끝까지 타오르는 <br class="sm:hidden"> <span class="text-brandOrange orange-glow-text">오렌지빛 함성</span>',
+                hero_desc: '세상에서 가장 단단한 불꽃들이 모여 대전을 오렌지빛으로 채운다.<br class="hidden sm:inline"> 우리는 이기고 질 때를 가리지 않고 끝까지 응원하는 <span class="text-white font-semibold underline decoration-brandOrange decoration-2">한화 이글스</span>입니다.',
+                hero_cta_1: '독수리의 비상 서사 보기 <i class="fa-solid fa-chevron-down"></i>',
+                hero_cta_2: '육성응원 비트 듣기 <i class="fa-solid fa-volume-high text-brandOrange"></i>',
+                point_1_title: 'POINT 01. <span class="text-brandOrange font-black">불꽃의 반격</span>',
+                point_1_desc: '길고 어두웠던 터널과 깊은 암흑기 속에서도 우리는 멈추지 않았습니다.<br>패배를 두려워하지 않고 끝까지 응원해 준 영혼들의 힘으로, 마침내 도약을 이뤄낸 독수리들의 위대한 기적을 돌아봅니다.',
+                tab_2020_title: "인고와 씨앗의 시기",
+                tab_2020_desc: "긴 암흑기 속 유망주 수집",
+                tab_2023_title: "영웅들의 귀환과 성장",
+                tab_2023_desc: "괴물 복귀와 젊은 타자 진화",
+                tab_2025_title: "마침내 찬란한 비상",
+                tab_2025_desc: "강력한 시너지로 상위권 도약",
+                badge_2020: "Darkness to Dawn",
+                content_2020_h: "가장 어두울 때 새로운 독수리가 잉태되다",
+                content_2020_p: "매서운 추위 속에서도 봄날의 싹을 틔우듯, 한화 이글스는 성장을 거듭했습니다. 긴 암흑기는 단순한 패배가 아니라, 유망주 투수 황준서, 문동주, 노시환의 대폭발을 가져오기 위한 혹독한 겨울잠이었습니다. 우리는 언제나 믿고 기다렸습니다.",
+                stat_lbl_1: "최대 관중 점유",
+                stat_lbl_2: "청년 지표 성장",
+                stat_val_2: "최정상 등급",
+                stat_lbl_3: "신인 유망 영입",
+                stat_val_3: "전체 1순위",
+                badge_2023: "Return of the King",
+                content_2023_h: "괴물의 귀환과 마주한 비상의 불씨",
+                content_2023_p: "메이저리그를 제패했던 코리안 몬스터의 감격적인 복귀, 그리고 그와 함께 대폭발한 대전 구장. 노련한 베테랑들의 완벽한 클래스와 신성들의 폭발적 장타력이 맞물리며, '언제나 약체'라는 딱지를 영원히 찢어발기기 시작했습니다.",
+                stat_lbl_4: "에이스 복귀",
+                stat_val_4: "류현진",
+                stat_lbl_5: "홈 경기 전석 매진",
+                stat_val_5: "연속 17회",
+                stat_lbl_6: "정규 시즌 홈런왕",
+                stat_val_6: "노시환",
+                badge_2025: "Glorious Flight",
+                content_2025_h: "2026년 마침내 완성된 가을의 기적",
+                content_2025_p: "완벽히 무르익은 신구조화의 다이내믹 라인업. 2026년 한화이글스는 상위권 구도를 뒤흔들며 리그에서 가장 무서운 팀으로 거듭났습니다. 패배를 사랑해 주던 팬들의 눈물은 이제 뜨거운 환희와 기쁨의 주황빛 함성으로 치환됩니다.",
+                stat_lbl_7: "2026 최고 구속",
+                stat_lbl_8: "시즌 가을야구",
+                stat_val_8: "진출 확정",
+                stat_lbl_9: "팬덤 충성도 지수",
+                stat_val_9: "KBO 최고",
+                point_2_title: 'POINT 02. <span class="text-brandOrange font-black">독수리 주역들</span>',
+                point_2_desc: '팀을 지탱하는 국보급 베테랑과 마운드를 지배하는 젊은 청년 독수리들. <br>한화이글스 전설을 써나가는 핵심 주역들의 디테일한 라인업을 소개합니다.',
+                modal_stats_h: "2026 Season Forecast 스탯",
+                modal_close: "닫기",
+                point_3_title: 'POINT 03. <span class="text-brandOrange font-black">불꽃의 함성</span>',
+                point_3_desc: '세상에서 가장 뜨거운 대전 한화생명 이글스파크의 함성을 내 손안에서 느껴보세요.<br>아래 응원 콘솔의 버튼들을 클릭하여 나만의 오렌지빛 육성 응원 비트를 연주할 수 있습니다.',
+                sound_title: "대전 직관의 전율을 연주하다",
+                sound_desc: "우리가 함께 지르는 주황빛 함성 뒤에는 항상 가슴을 울리던 힘찬 응원 드럼과 열기가 있었습니다. 웹 브라우저 오디오 시스템으로 직접 제작한 4가지 오렌지빛 시그니처 사운드를 들어보세요!",
+                pad_1: "1. 함성 베이스 북",
+                pad_2: "2. 열광의 박수",
+                pad_3: "3. 승리의 팡파르",
+                pad_4: "4. 고주파 함성음",
+                guide_tag: "Official Cheer Guide",
+                cheer_anthem_title: "최! 강! 한! 화! 응원가",
+                lyric_1: '"끝까지 타오르는 오렌지빛 함성!"',
+                lyric_2: '"나는 행복합니다~ 나는 행복합니다~"',
+                lyric_3: '"한화라서 행복합니다! 사랑한다 최강한화!"',
+                rhythm_btn_on: '<i class="fa-solid fa-play"></i> 경기장 응원 루프 켜기',
+                rhythm_btn_off: '<i class="fa-solid fa-stop animate-pulse"></i> 드럼 응원 비트 끄기',
+                kbo_tag: "2026 KBO LIVE MATCH",
+                board_title: "당일 경기 대시보드",
+                team_a_name: "한화 이글스",
+                team_a_starting: "선발: 류현진",
+                match_status: "대기중",
+                stadium_name: "대전 이글스파크",
+                team_b_name: "KIA 타이거즈",
+                team_b_starting: "선발: 양현종",
+                weather_prefix: "현재 대전 기온: ",
+                schedule_btn: '공식 경기 일정 확인 <i class="fa-solid fa-arrow-right-long"></i>',
+                shop_tag: "Eagles Premium Store",
+                shop_title: "오렌지빛 영혼을 착용하다",
+                shop_desc: "한화 이글스 공식 굿즈와 2026 시즌 어센틱 유니폼을 만나보세요. 경기장에 주황빛 물결을 더할 완벽한 기어들이 준비되어 있습니다.",
+                shop_item_1: "2026 어센틱 오렌지 유니폼",
+                shop_item_2: "이글스 어센틱 어반 캡",
+                view_btn: "구경하기",
+                footer_brand_desc: '"끝까지 타오르는 오렌지빛 함성"<br>한화이글스는 긴 시간 동안의 인고를 딛고 언제나 대전을 지켜준 팬들의 불꽃같은 열정으로 매일 기적의 비상을 꿈꾸며 증명해 나가고 있습니다.',
+                footer_col_1_title: "구단 바로가기",
+                footer_col_2_title: "체험 기능",
+                f_feat_1: "불꽃 캔버스 인터랙션",
+                f_feat_2: "오디오 응원비트 연주",
+                f_feat_3: "실시간 대시보드",
+                copyright: "© 2026 한화이글스 공식 브랜딩 기획 디자인 가이드. All rights reserved.",
+                f_privacy: "개인정보 처리방침",
+                f_terms: "이용약관"
+            },
+            en: {
+                nav_home: "HOME",
+                nav_narrative: "NARRATIVE",
+                nav_heroes: "LINEUP",
+                nav_passion: "PASSION STAGE",
+                nav_dashboard: "TODAY'S EAGLES",
+                btn_official: "Official Website",
+                hero_tag: "🔥 2026 Season: Rebirth of Eagles",
+                hero_title: 'Unstoppable <br class="sm:hidden"> <span class="text-brandOrange orange-glow-text">Orange Shout</span>',
+                hero_desc: 'The toughest sparks on earth gather to paint Daejeon in brilliant orange.<br class="hidden sm:inline"> We are the <span class="text-white font-semibold underline decoration-brandOrange decoration-2">Hanwha Eagles</span>, cheering to the very end regardless of victory or defeat.',
+                hero_cta_1: 'View Eagles Saga <i class="fa-solid fa-chevron-down"></i>',
+                hero_cta_2: 'Listen to Stadium Beat <i class="fa-solid fa-volume-high text-brandOrange"></i>',
+                point_1_title: 'POINT 01. <span class="text-brandOrange font-black">Counter of Sparks</span>',
+                point_1_desc: 'We never stopped even in the long, cold darkness of a rebuilding season.<br>Fuelled by the souls who cheered without fear of defeat, we look back on the great miracle of the Eagles\' final ascent.',
+                tab_2020_title: "Seed of Endurance",
+                tab_2020_desc: "Accumulating prospects in dark age",
+                tab_2023_title: "Return of Heroes & Growth",
+                tab_2023_desc: "The Monster returns & hitters evolve",
+                tab_2025_title: "Glorious Flight at Last",
+                tab_2025_desc: "Rising to top tier with synergy",
+                badge_2020: "Darkness to Dawn",
+                content_2020_h: "A New Eagle is Born in the Darkest Hour",
+                content_2020_p: "Like sprouting in cold winter, Hanwha Eagles continued to grow. The long dark age was not a failure, but a crucial hibernation to prepare the giant explosions of super-prospects like Dong-Ju Moon, Si-Hwan Noh, and Jun-Seo Hwang. We have believed and waited.",
+                stat_lbl_1: "Max Fan Attendance",
+                stat_lbl_2: "Youth Loyalty Growth",
+                stat_val_2: "Top Tier",
+                stat_lbl_3: "Rookie Draft Pick",
+                stat_val_3: "#1 Overall",
+                badge_2023: "Return of the King",
+                content_2023_h: "The Return of the Korean Monster",
+                content_2023_p: "The dramatic homecoming of the Korean Monster Ryu, who once conquered Major League Baseball, set Daejeon Stadium ablaze. The perfect composure of veterans met with the explosive raw power of the rookies, erasing the 'weak team' label forever.",
+                stat_lbl_4: "Ace Homecoming",
+                stat_val_4: "Hyun-Jin Ryu",
+                stat_lbl_5: "Full House Sell-Outs",
+                stat_val_5: "17 Consecutive",
+                stat_lbl_6: "Regular Season HR King",
+                stat_val_6: "Si-Hwan Noh",
+                badge_2025: "Glorious Flight",
+                content_2025_h: "Autumn Legend Complete in 2026",
+                content_2025_p: "The dynamic synergy of veterans and rookies is now complete. In 2026, Hanwha Eagles shook the KBO league standings to become the most feared team. The tears of our loyal fans are finally transformed into ecstatic shouts of orange fire.",
+                stat_lbl_7: "2026 Top Velocity",
+                stat_lbl_8: "Postseason Ticket",
+                stat_val_8: "Confirmed",
+                stat_lbl_9: "Fan Loyalty Index",
+                stat_val_9: "KBO #1 Rank",
+                point_2_title: 'POINT 02. <span class="text-brandOrange font-black">Eagles Heroes</span>',
+                point_2_desc: 'Unbeatable veterans holding the ground and fearless young eagles ruling the mound. <br>Introducing the prime lineup writing the new chapter of Hanwha Eagles.',
+                modal_stats_h: "2026 Season Forecast Stats",
+                modal_close: "Close",
+                point_3_title: 'POINT 03. <span class="text-brandOrange font-black">The Orange Shout</span>',
+                point_3_desc: 'Experience the electric atmosphere of Daejeon Hanwha Life Eagles Park in your palm.<br>Click the soundboard below to compose your own orange cheering drum beats.',
+                sound_title: "Compose Daejeon's Electric Fever",
+                sound_desc: "Behind our collective orange shouts was always the deep bass drum and clap that shook our hearts. Tap the pads to trigger real-time synthesized signature sounds!",
+                pad_1: "1. Bass Cheer Drum",
+                pad_2: "2. Crowds Clapping",
+                pad_3: "3. Victory Trumpet",
+                pad_4: "4. High Crowd Cheer",
+                guide_tag: "Official Cheer Guide",
+                cheer_anthem_title: "C-H-E-E-R Anthem",
+                lyric_1: '"The orange shout burning to the very end!"',
+                lyric_2: '"I am happy~ I am truly happy~"',
+                lyric_3: '"Happy to be Hanwha! We love you, Eagles!"',
+                rhythm_btn_on: '<i class="fa-solid fa-play"></i> Turn On Stadium Loop',
+                rhythm_btn_off: '<i class="fa-solid fa-stop animate-pulse"></i> Turn Off Drum Loop',
+                kbo_tag: "2026 KBO LIVE MATCH",
+                board_title: "Live Game Dashboard",
+                team_a_name: "Hanwha Eagles",
+                team_a_starting: "SP: Hyun-Jin Ryu",
+                match_status: "UPCOMING",
+                stadium_name: "Daejeon Eagles Park",
+                team_b_name: "KIA Tigers",
+                team_b_starting: "SP: Hyeon-Jong Yang",
+                weather_prefix: "Daejeon Weather: ",
+                schedule_btn: 'View Game Schedule <i class="fa-solid fa-arrow-right-long"></i>',
+                shop_tag: "Eagles Premium Store",
+                shop_title: "Wear the Orange Soul",
+                shop_desc: "Check out the official Hanwha Eagles goods and the 2026 Authentic Uniform. Get geared up to paint the stadium orange.",
+                shop_item_1: "2026 Authentic Orange Jersey",
+                shop_item_2: "Authentic Urban Cap",
+                view_btn: "Explore",
+                footer_brand_desc: '"Burning until the very end, Orange Shout"<br>Overcoming tough years, Hanwha Eagles strive for new heights with the fiery passion of the fans guarding Daejeon.',
+                footer_col_1_title: "Quick Links",
+                footer_col_2_title: "Interactions",
+                f_feat_1: "Flame Sparks Canvas",
+                f_feat_2: "Audio Synthesizer",
+                f_feat_3: "Live Dashboard",
+                copyright: "© 2026 Hanwha Eagles Official Branding Showcase. All rights reserved.",
+                f_privacy: "Privacy Policy",
+                f_terms: "Terms of Use"
+            }
+        };
+
+        let currentLang = 'ko';
+
+        const playersData = {
+            ryu: {
+                ko: {
+                    name: "류현진", num: "99", pos: "LHP (선발투수)",
+                    bio: "메이저리그를 누비며 전 세계 야구팬들을 뜨겁게 했던 '코리안 몬스터'가 마침내 고향 구단 대전으로 돌아왔습니다. 압도적인 제구력과 묵직한 이닝이터로서의 무게감으로 한화의 마운드를 지탱합니다.",
+                    stats: { "예상 승수": "13승 5패", "방어율 (ERA)": "2.95", "탈삼진 (SO)": "145개", "퀄리티 스타트 비율": "75%" }
+                },
+                en: {
+                    name: "Hyun-Jin Ryu", num: "99", pos: "LHP (Starting Pitcher)",
+                    bio: "The 'Korean Monster' who conquered MLB returns to Daejeon. Supporting Hanwha's rotation with absolute control and unparalleled experience.",
+                    stats: { "Wins Prediction": "13W - 5L", "ERA Prediction": "2.95", "Strikeouts": "145 SO", "Quality Start %": "75%" }
+                }
+            },
+            chae: {
+                ko: {
+                    name: "채은성", num: "22", pos: "1B / DH (내야수)",
+                    bio: "한화 이글스의 든든한 주장이자 중심 타선의 핵심 해결사. 강력한 클러치 능력과 탄탄한 리더십으로 젊은 선수들을 하나로 묶고 승리로 이끕니다.",
+                    stats: { "예상 홈런수": "25 홈런", "예상 타점": "90 타점", "득점권 타율": "0.312", "리더십 레이팅": "S Grade" }
+                },
+                en: {
+                    name: "Eun-Seong Chae", num: "22", pos: "1B / DH (Infielder)",
+                    bio: "Hanwha's reliable captain and veteran clutch hitter. Leading the team with great leadership and solid production at the plate.",
+                    stats: { "Home Runs": "25 HR", "RBIs": "90 RBI", "RISP BA": "0.312", "Leadership Rating": "S Grade" }
+                }
+            },
+            moon: {
+                ko: {
+                    name: "문동주", num: "1", pos: "RHP (선발투수)",
+                    bio: "대한민국 야구 역사상 가장 빠른 구속인 공식 160.1km/h를 기록한 한화이글스의 젊은 불꽃광속 에이스. 국가대표 마운드를 지키는 구단의 미래이자 심장입니다.",
+                    stats: { "최고 구속": "161.2 km/h", "예상 탈삼진": "160개", "평균 자책점 (ERA)": "3.15", "이닝당 출루허용률": "1.12" }
+                },
+                en: {
+                    name: "Dong-Ju Moon", num: "1", pos: "RHP (Starting Pitcher)",
+                    bio: "The fireballer of South Korea holding the official record of 160.1 km/h. He represents the bright future and national power of Hanwha's mound.",
+                    stats: { "Max Velocity": "161.2 km/h", "SO Prediction": "160 SO", "ERA Forecast": "3.15", "WHIP": "1.12" }
+                }
+            },
+            noh: {
+                ko: {
+                    name: "노시환", num: "8", pos: "3B (내야수)",
+                    bio: "KBO 홈런왕 타이틀을 거머쥐며 리그 최고의 3루수 거포로 우뚝 선 명실상부한 한화의 거포 해결사. 주황빛 대전을 가르는 시원한 홈런 폭격을 선사합니다.",
+                    stats: { "예상 홈런수": "38 홈런", "예상 타점": "115 타점", "장타율 (SLG)": "0.585", "득점권 타율": "0.345" }
+                },
+                en: {
+                    name: "Si-Hwan Noh", num: "8", pos: "3B (Infielder)",
+                    bio: "The reigning KBO home run king and prime third baseman. Delivering deep orange home runs that divide the Daejeon sky.",
+                    stats: { "HR Prediction": "38 HR", "RBIs": "115 RBI", "SLG Prediction": "0.585", "RISP BA": "0.345" }
+                }
+            },
+            kim: {
+                ko: {
+                    name: "김서현", num: "44", pos: "RHP (투수)",
+                    bio: "2023 드래프트 전체 1순위에 빛나는 초광속 투수. 독보적인 패스트볼 무브먼트와 압도적인 삼진 구사 능력으로 리그를 대표하는 불펜 수호신으로 거듭나고 있습니다.",
+                    stats: { "직구 평균구속": "154.5 km/h", "예상 홀드/세이브": "25 H/S", "삼진율 (K/9)": "10.45", "피안타율": "0.205" }
+                },
+                en: {
+                    name: "Seo-Hyeon Kim", num: "44", pos: "RHP (Pitcher)",
+                    bio: "The overall #1 pick of 2023 with insane fastball movement. Evolving rapidly to become one of the league's top-tier bullpen weapons.",
+                    stats: { "Avg Velocity": "154.5 km/h", "H/S Prediction": "25 H/S", "K/9 Rate": "10.45", "BA Against": "0.205" }
+                }
+            },
+            joo: {
+                ko: {
+                    name: "주현상", num: "66", pos: "RHP (마무리투수)",
+                    bio: "철벽 수비력과 탁월한 위기관리 능력을 자랑하는 한화이글스의 완벽한 수호신. 9회 말 승리를 확정 짓는 날카로운 제구력으로 팬들에게 심리적 안정감을 제공합니다.",
+                    stats: { "예상 세이브": "32 세이브", "예상 방어율 (ERA)": "1.85", "이닝당 출루허용률": "0.98", "세이브 성공률": "94.5%" }
+                },
+                en: {
+                    name: "Hyun-Sang Joo", num: "66", pos: "RHP (Closer)",
+                    bio: "The absolute closer who guards the gates in the 9th inning. Precise pitching that brings safety and comfort to every loyal fan.",
+                    stats: { "Saves Prediction": "32 SV", "ERA Forecast": "1.85", "WHIP Forecast": "0.98", "Success Rate": "94.5%" }
+                }
+            },
+            hwang: {
+                ko: {
+                    name: "황준서", num: "29", pos: "LHP (투수)",
+                    bio: "2024년 전체 1순위에 빛나는 특급 좌완 테크니션. 신인답지 않은 대담한 마운드 운영과 낙차 큰 결정구로 타선의 타이밍을 무너뜨리는 영리한 에이스입니다.",
+                    stats: { "예상 승수": "8승 6패", "주무기": "스플리터 / 슬라이더", "예상 방어율 (ERA)": "3.65", "9이닝당 탈삼진": "8.8개" }
+                },
+                en: {
+                    name: "Jun-Seo Hwang", num: "29", pos: "LHP (Pitcher)",
+                    bio: "The brilliant 2024 #1 overall draft pick. Outwitting batters with an elite splitter and incredible composure for his age.",
+                    stats: { "Wins Prediction": "8W - 6L", "Main Weapon": "Splitter / Slider", "ERA Prediction": "3.65", "K/9 Rate": "8.8 K/9" }
+                }
+            },
+            muk: {
+                ko: {
+                    name: "황영묵", num: "95", pos: "IF (내야수)",
+                    bio: "독립리그에서 한화 이글스까지 올라온 인간 승리의 아이콘이자 허슬 플레이의 상징. 매 순간 온 몸을 던지는 완벽한 슬라이딩과 수비 집중력으로 경기장의 분위기를 바꿉니다.",
+                    stats: { "예상 타율": "0.295", "예상 안타수": "110 안타", "출루율": "0.345", "허슬 팩터": "최상 (SSS)" }
+                },
+                en: {
+                    name: "Young-Muk Hwang", num: "95", pos: "IF (Infielder)",
+                    bio: "The symbol of hustle play and a living story of human victory. Igniting the stadium with dynamic diving catches and intense focus.",
+                    stats: { "BA Forecast": "0.295", "Hits Forecast": "110 H", "OBP Prediction": "0.345", "Hustle Factor": "SSS Grade" }
+                }
+            }
+        };
+
+        function renderPlayerCards() {
+            const container = document.getElementById('playersCardContainer');
+            container.innerHTML = '';
+
+            Object.entries(playersData).forEach(([id, langObj]) => {
+                const p = langObj[currentLang];
+                container.innerHTML += `
+                    <div class="player-card min-w-[260px] sm:min-w-[340px] max-w-[340px] bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 snap-start flex flex-col justify-between transition-all duration-300 hover:border-brandOrange hover:-translate-y-2 group cursor-pointer relative" onclick="openPlayerModal('${id}')">
+                        <div class="absolute right-4 top-4 text-brandOrange font-headline text-4xl sm:text-5xl opacity-10 font-black select-none">${p.num}</div>
+                        <div>
+                            <div class="relative w-full h-48 sm:h-64 rounded-xl bg-gradient-to-t from-brandNavy to-slate-800 overflow-hidden mb-4 sm:mb-6 flex items-end justify-center">
+                                <svg class="w-28 h-28 sm:w-40 sm:h-40 text-brandGray/20 group-hover:text-brandOrange/30 transition-all duration-500 transform group-hover:scale-110" viewBox="0 0 100 100" fill="currentColor">
+                                    <circle cx="50" cy="35" r="20" />
+                                    <path d="M50,60 C30,60 20,75 20,90 L80,90 C80,75 70,60 50,60 Z" />
+                                </svg>
+                                <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
+                                    <span class="text-[10px] font-bold text-brandOrange">${p.pos}</span>
+                                </div>
+                            </div>
+                            <h3 class="text-xl sm:text-2xl font-bold text-white group-hover:text-brandOrange transition-colors">${p.name} <span class="text-xs font-normal text-brandGray ml-1">No.${p.num}</span></h3>
+                            <p class="text-xs text-brandGray mt-1 leading-relaxed line-clamp-2">"${p.bio}"</p>
+                        </div>
+                        <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex justify-between items-center text-xs sm:text-sm">
+                            <span class="text-brandGray">${currentLang === 'ko' ? '주요 임무' : 'Key Role'}</span>
+                            <span class="font-bold text-white font-headline">${p.pos}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            attachCursorListeners();
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            
+            // Toggle active classes on language selector
+            const koBtn = document.getElementById('lang-ko-btn');
+            const enBtn = document.getElementById('lang-en-btn');
+            
+            if (lang === 'ko') {
+                koBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all bg-brandOrange text-white";
+                enBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all text-brandGray hover:text-white";
+            } else {
+                enBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all bg-brandOrange text-white";
+                koBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all text-brandGray hover:text-white";
+            }
+
+            // Translate static elements with [data-i18n]
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (languageDictionary[lang][key]) {
+                    el.innerHTML = languageDictionary[lang][key];
+                }
+            });
+
+            // Re-render players based on language
+            renderPlayerCards();
+        }
+
         /* Mobile Menu Toggle Logic */
         let isMobileMenuOpen = false;
         function toggleMobileMenu() {
@@ -816,7 +1034,7 @@
             }
         }
 
-        /* 1. Spark canvas animation behind the hero block with Touch Event optimization */
+        /* 1. Spark canvas animation with Touch Event Optimization */
         const canvas = document.getElementById('sparksCanvas');
         const ctx = canvas.getContext('2d');
         let particlesArray = [];
@@ -829,7 +1047,7 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // Mouse interaction
+        // Mouse coordinates tracker
         window.addEventListener('mousemove', (e) => {
             mouse.x = e.clientX;
             mouse.y = e.clientY;
@@ -839,7 +1057,7 @@
             mouse.y = null;
         });
 
-        // Touch interaction support (Mobile Sparks)
+        // Touch gesture mapping
         window.addEventListener('touchmove', (e) => {
             if (e.touches.length > 0) {
                 mouse.x = e.touches[0].clientX;
@@ -872,7 +1090,6 @@
                 this.y -= this.speedY;
                 this.x += this.speedX;
                 
-                // Attract to mouse/touch coordinates
                 if (mouse.x && mouse.y) {
                     let dx = mouse.x - this.x;
                     let dy = mouse.y - this.y;
@@ -894,8 +1111,7 @@
         }
 
         function handleParticles() {
-            // Adjust maximum particle count for low-power mobile devices
-            const maxParticles = window.innerWidth < 640 ? 60 : 120;
+            const maxParticles = window.innerWidth < 640 ? 50 : 100;
             if (particlesArray.length < maxParticles) {
                 particlesArray.push(new Particle());
             }
@@ -903,7 +1119,6 @@
                 particlesArray[i].update();
                 particlesArray[i].draw();
                 
-                // Remove out of bounds or tiny
                 if (particlesArray[i].y < 0 || particlesArray[i].size <= 0.2) {
                     particlesArray.splice(i, 1);
                     i--;
@@ -916,18 +1131,57 @@
             handleParticles();
             requestAnimationFrame(animateSparks);
         }
-        
-        // Start animation after safety check
-        window.onload = function() {
-            animateSparks();
+
+        /* 2. Refined High Visibility Custom Cursor with Interpolated Inertia */
+        const cursorDot = document.getElementById('custom-cursor-dot');
+        const cursorRing = document.getElementById('custom-cursor-ring');
+
+        let cursorCoords = { x: 0, y: 0 };
+        let ringCoords = { x: 0, y: 0 };
+
+        window.addEventListener('mousemove', (e) => {
+            cursorCoords.x = e.clientX;
+            cursorCoords.y = e.clientY;
+            
+            // Instantly move the core dot
+            cursorDot.style.left = `${cursorCoords.x}px`;
+            cursorDot.style.top = `${cursorCoords.y}px`;
+        });
+
+        // Smoothly interpolate the tracking ring
+        function animateCursorRing() {
+            const ease = 0.15; // smooth friction coefficient
+            ringCoords.x += (cursorCoords.x - ringCoords.x) * ease;
+            ringCoords.y += (cursorCoords.y - ringCoords.y) * ease;
+
+            cursorRing.style.left = `${ringCoords.x}px`;
+            cursorRing.style.top = `${ringCoords.y}px`;
+
+            requestAnimationFrame(animateCursorRing);
+        }
+        animateCursorRing();
+
+        // Hover expansions for hyperlinks and controls
+        function attachCursorListeners() {
+            const interactiveElements = document.querySelectorAll('a, button, .player-card, .timeline-btn');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    document.body.classList.add('cursor-hover');
+                });
+                el.addEventListener('mouseleave', () => {
+                    document.body.classList.remove('cursor-hover');
+                });
+            });
         }
 
-        /* 2. Timeline Interaction */
+        /* 3. Timeline switcher */
         function switchTimeline(year) {
             document.querySelectorAll('.timeline-btn').forEach(btn => {
                 btn.classList.remove('active-timeline', 'border-brandOrange');
+                btn.classList.add('border-white/10');
             });
             document.getElementById(`btn-${year}`).classList.add('active-timeline', 'border-brandOrange');
+            document.getElementById(`btn-${year}`).classList.remove('border-white/10');
 
             document.querySelectorAll('.timeline-content').forEach(content => {
                 content.classList.add('hidden');
@@ -935,7 +1189,7 @@
             document.getElementById(`content-${year}`).classList.remove('hidden');
         }
 
-        /* 3. Player Slider Navigation with Touch & Scroll adjustments */
+        /* 4. Player Slider navigation */
         function slidePlayers(direction) {
             const viewport = document.getElementById('sliderViewport');
             const cardWidth = viewport.firstElementChild ? viewport.firstElementChild.offsetWidth + 24 : 360;
@@ -946,108 +1200,9 @@
             }
         }
 
-        /* 4. Player Profile Modals Data Map */
-        const playersData = {
-            ryu: {
-                name: "류현진",
-                num: "99",
-                pos: "LHP (선발투수)",
-                bio: "메이저리그를 누비며 전 세계 야구팬들을 뜨겁게 했던 '코리안 몬스터'가 마침내 고향 구단 대전으로 돌아왔습니다. 압도적인 제구력과 묵직한 이닝이터로서의 무게감으로 한화의 마운드를 지탱합니다.",
-                stats: {
-                    "2026 예상 승수": "13승 5패",
-                    "예상 방어율 (ERA)": "2.95",
-                    "예상 탈삼진 (SO)": "145개",
-                    "퀄리티 스타트 비율": "75%"
-                }
-            },
-            chae: {
-                name: "채은성",
-                num: "22",
-                pos: "1B / DH (내야수)",
-                bio: "한화 이글스의 든든한 주장이자 중심 타선의 핵심 해결사. 강력한 클러치 능력과 탄탄한 리더십으로 젊은 선수들을 하나로 묶고 승리로 이끕니다.",
-                stats: {
-                    "2026 예상 홈런수": "25 홈런",
-                    "2026 예상 타점": "90 타점",
-                    "득점권 타율": "0.312",
-                    "리더십 레이팅": "S Grade"
-                }
-            },
-            moon: {
-                name: "문동주",
-                num: "1",
-                pos: "RHP (선발투수)",
-                bio: "대한민국 야구 역사상 가장 빠른 구속인 공식 160.1km/h를 기록한 한화이글스의 젊은 불꽃광속 에이스. 국가대표 마운드를 지키는 구단의 미래이자 심장입니다.",
-                stats: {
-                    "최고 구속": "161.2 km/h",
-                    "2026 예상 탈삼진": "160개",
-                    "평균 자책점 (ERA)": "3.15",
-                    "이닝당 출루허용률": "1.12"
-                }
-            },
-            noh: {
-                name: "노시환",
-                num: "8",
-                pos: "3B (내야수)",
-                bio: "KBO 홈런왕 타이틀을 거머쥐며 리그 최고의 3루수 거포로 우뚝 선 명실상부한 한화의 거포 해결사. 주황빛 대전을 가르는 시원한 홈런 폭격을 선사합니다.",
-                stats: {
-                    "2026 예상 홈런수": "38 홈런",
-                    "2026 예상 타점": "115 타점",
-                    "예상 장타율 (SLG)": "0.585",
-                    "득점권 타율": "0.345"
-                }
-            },
-            kim: {
-                name: "김서현",
-                num: "44",
-                pos: "RHP (투수)",
-                bio: "2023 드래프트 전체 1순위에 빛나는 초광속 투수. 독보적인 패스트볼 무브먼트와 압도적인 삼진 구사 능력으로 리그를 대표하는 불펜 수호신으로 거듭나고 있습니다.",
-                stats: {
-                    "직구 평균구속": "154.5 km/h",
-                    "2026 예상 홀드/세이브": "25 H/S",
-                    "삼진율 (K/9)": "10.45",
-                    "피안타율": "0.205"
-                }
-            },
-            joo: {
-                name: "주현상",
-                num: "66",
-                pos: "RHP (마무리투수)",
-                bio: "철벽 수비력과 탁월한 위기관리 능력을 자랑하는 한화이글스의 완벽한 수호신. 9회 말 승리를 확정 짓는 날카로운 제구력으로 팬들에게 심리적 안정감을 제공합니다.",
-                stats: {
-                    "2026 예상 세이브": "32 세이브",
-                    "예상 방어율 (ERA)": "1.85",
-                    "이닝당 출루허용률": "0.98",
-                    "세이브 성공률": "94.5%"
-                }
-            },
-            hwang: {
-                name: "황준서",
-                num: "29",
-                pos: "LHP (투수)",
-                bio: "2024년 전체 1순위에 빛나는 특급 좌완 테크니션. 신인답지 않은 대담한 마운드 운영과 낙차 큰 결정구로 타선의 타이밍을 무너뜨리는 영리한 에이스입니다.",
-                stats: {
-                    "2026 예상 승수": "8승 6패",
-                    "주무기": "스플리터 / 슬라이더",
-                    "예상 방어율 (ERA)": "3.65",
-                    "9이닝당 탈삼진": "8.8개"
-                }
-            },
-            muk: {
-                name: "황영묵",
-                num: "95",
-                pos: "IF (내야 유틸리티)",
-                bio: "독립리그에서 한화 이글스까지 올라온 인간 승리의 아이콘이자 허슬 플레이의 상징. 매 순간 온 몸을 던지는 완벽한 슬라이딩과 수비 집중력으로 경기장의 분위기를 바꿉니다.",
-                stats: {
-                    "2026 예상 타율": "0.295",
-                    "예상 안타수": "110 안타",
-                    "출루율": "0.345",
-                    "허슬 팩터": "최상 (SSS)"
-                }
-            }
-        };
-
+        /* 5. Profile Modals Data Map */
         function openPlayerModal(playerId) {
-            const player = playersData[playerId];
+            const player = playersData[playerId][currentLang];
             if (!player) return;
 
             document.getElementById('modalPlayerNum').innerText = player.num;
@@ -1076,7 +1231,7 @@
             document.body.classList.remove('no-scroll');
         }
 
-        /* 5. Custom Live Audio Synthesizer (Web Audio API) */
+        /* 6. Live Web Audio Synthesizer */
         let audioCtx = null;
         let rhythmTimer = null;
         let isRhythmPlaying = false;
@@ -1097,7 +1252,6 @@
             const now = audioCtx.currentTime;
 
             if (type === 'drum') {
-                // Bass Drum Synthesis
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.connect(gain);
@@ -1113,7 +1267,6 @@
                 osc.stop(now + 0.3);
             } 
             else if (type === 'clap') {
-                // Clapping (White Noise Burst)
                 const bufferSize = audioCtx.sampleRate * 0.15;
                 const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
                 const data = buffer.getChannelData(0);
@@ -1140,13 +1293,12 @@
                 noise.stop(now + 0.15);
             } 
             else if (type === 'synth') {
-                // Fanfare Fanatic Synth chord
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(440, now); // A4
-                osc.frequency.exponentialRampToValueAtTime(880, now + 0.4); // A5
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.4);
 
                 gain.gain.setValueAtTime(0.3, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
@@ -1158,7 +1310,6 @@
                 osc.stop(now + 0.45);
             }
             else if (type === 'cheer') {
-                // High Pitch Crowd sound simulator
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = 'sawtooth';
@@ -1176,7 +1327,6 @@
             }
         }
 
-        // Loop Runner (Simulate cheering rhythm of "최-강-한-화" base beat)
         function toggleRhythmLoop() {
             initAudio();
             const btn = document.getElementById('btnPlayRhythm');
@@ -1184,16 +1334,15 @@
             if (isRhythmPlaying) {
                 clearInterval(rhythmTimer);
                 isRhythmPlaying = false;
-                btn.innerHTML = `<i class="fa-solid fa-play"></i> 경기장 응원 루프 켜기`;
+                btn.innerHTML = languageDictionary[currentLang].rhythm_btn_on;
                 btn.classList.remove('bg-emerald-600');
                 btn.classList.add('bg-brandOrange');
             } else {
                 isRhythmPlaying = true;
-                btn.innerHTML = `<i class="fa-solid fa-stop animate-pulse"></i> 드럼 응원 비트 끄기`;
+                btn.innerHTML = languageDictionary[currentLang].rhythm_btn_off;
                 btn.classList.remove('bg-brandOrange');
                 btn.classList.add('bg-emerald-600');
                 
-                // Start sequence (120 BPM: 500ms intervals)
                 rhythmTimer = setInterval(() => {
                     const now = audioCtx.currentTime;
                     if (currentStep % 4 === 0) {
@@ -1206,18 +1355,18 @@
             }
         }
 
-        /* 6. Shop Demo simulation */
+        /* 7. Shop Mock Alert */
         function openShopDemo(item) {
             const alertBox = document.getElementById('shopAlert');
             const title = document.getElementById('shopAlertTitle');
             const desc = document.getElementById('shopAlertDesc');
 
             if (item === 'uniform') {
-                title.innerText = "2026 어센틱 오렌지 유니폼";
-                desc.innerText = "인터랙티브 뷰어로 오렌지 컬러감을 체크했습니다. 경기장 현장 수령 예약이 가능합니다.";
+                title.innerText = currentLang === 'ko' ? "2026 어센틱 오렌지 유니폼" : "2026 Authentic Orange Jersey";
+                desc.innerText = currentLang === 'ko' ? "오렌지 컬러감을 체크했습니다. 경기장 현장 수령 예약이 가능합니다." : "Uniform selected. Stadium pick-up options are available.";
             } else {
-                title.innerText = "이글스 어센틱 어반 캡";
-                desc.innerText = "최신 힙합 스타일 스트릿 캡의 상세 제원이 준비되었습니다.";
+                title.innerText = currentLang === 'ko' ? "이글스 어센틱 어반 캡" : "Authentic Urban Cap";
+                desc.innerText = currentLang === 'ko' ? "최신 스트릿 패션 캡의 상세 제원이 확인되었습니다." : "Authentic cap specifications are checked.";
             }
 
             alertBox.classList.remove('hidden');
@@ -1234,7 +1383,7 @@
             }, 300);
         }
 
-        // Active state of scroll navbar highlighting
+        /* Active status of scroll navbar highlighting */
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
             if (window.scrollY > 50) {
@@ -1245,6 +1394,13 @@
                 nav.classList.remove('bg-brandNavy', 'shadow-lg');
             }
         });
+
+        // Initialize setup
+        window.onload = function() {
+            animateSparks();
+            renderPlayerCards();
+            attachCursorListeners();
+        }
     </script>
 </body>
 </html>
